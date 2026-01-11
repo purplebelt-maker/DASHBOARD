@@ -7,9 +7,9 @@ export const metadata: Metadata = {
   description: 'Live prediction market data dashboard showing top Polymarket markets by volume',
   viewport: 'width=device-width, initial-scale=1',
   icons: {
-    icon: '/prediction-market-edge-logo.png',
-    shortcut: '/prediction-market-edge-logo.png',
-    apple: '/prediction-market-edge-logo.png',
+    icon: '/favicon.PNG',
+    shortcut: '/favicon.PNG',
+    apple: '/favicon.PNG',
   },
 }
 
@@ -19,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="h-full">
+    <html lang="en" className="h-full dark">
       <body className="h-full">
         <ThemeProvider>{children}</ThemeProvider>
       </body>

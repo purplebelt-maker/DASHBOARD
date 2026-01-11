@@ -16,20 +16,24 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    // Check localStorage for saved theme preference
+    // Check if this is the first visit (no theme preference saved)
     const savedTheme = localStorage.getItem('theme') as Theme | null
+    
     if (savedTheme) {
+      // User has a saved preference, use it
       setTheme(savedTheme)
-      // Apply theme immediately - Tailwind uses 'dark' class only
       if (savedTheme === 'dark') {
         document.documentElement.classList.add('dark')
       } else {
         document.documentElement.classList.remove('dark')
       }
     } else {
-      // Default to dark mode - ensure dark class is present
+      // First visit - default to dark mode
+      setTheme('dark')
       document.documentElement.classList.add('dark')
+      localStorage.setItem('theme', 'dark')
     }
+    
     setMounted(true)
   }, [])
 

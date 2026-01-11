@@ -1,24 +1,28 @@
 'use client'
 
-import ThemeToggle from './ThemeToggle'
+import Image from 'next/image'
+import { useTheme } from '@/contexts/ThemeContext'
 
 export default function Header() {
+  const { theme } = useTheme()
+  
+  // Use logo-dark for light mode, logo-light for dark mode
+  const logoSrc = theme === 'light' ? '/logo-dark.png' : '/logo-light.png'
+
   return (
     <div className="container mx-auto px-4 py-6 sm:px-6 lg:px-8">
       <header className="mx-auto max-w-7xl rounded-lg bg-slate-100 dark:bg-[#1e293b] border border-gray-300 dark:border-gray-600 shadow-md dark:shadow-none px-4 py-6 sm:px-6 lg:px-8 transition-colors duration-300">
-        {/* Theme Toggle - Top Right */}
-        <div className="mb-4 flex justify-end">
-          <ThemeToggle />
-        </div>
-        
         {/* Logo and Title - Centered */}
         <div className="flex flex-col items-center justify-center space-y-3">
           {/* Logo */}
-          <div className="flex items-center justify-center">
-            <img
-              src="/prediction-market-edge-logo.png"
+          <div className="flex items-center justify-center relative" style={{ height: '64px' }}>
+            <Image
+              src={logoSrc}
               alt="Prediction Market Edge Logo"
-              className="h-auto w-auto max-h-12 sm:max-h-16"
+              width={200}
+              height={64}
+              className="h-auto w-auto max-h-12 sm:max-h-16 object-contain"
+              priority
             />
           </div>
 

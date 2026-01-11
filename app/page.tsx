@@ -12,7 +12,7 @@ export default function Home() {
   const [view, setView] = useState<'table' | 'grid'>('table')
 
   return (
-    <div className="min-h-screen bg-[#0f172a]">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#0f172a] transition-colors duration-300">
       <Header />
       <ControlBar view={view} onViewChange={setView} />
       <main className="container mx-auto px-4 pb-4 pt-8 sm:px-6 lg:px-8">

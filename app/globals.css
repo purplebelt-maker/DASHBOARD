@@ -7,6 +7,22 @@
   --foreground: #f1f5f9;
 }
 
+.light {
+  --background: #f8fafc;
+  --foreground: #1e293b;
+}
+
+.dark {
+  --background: #0f172a;
+  --foreground: #f1f5f9;
+}
+
+* {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 200ms;
+}
+
 body {
   color: var(--foreground);
   background: var(--background);
@@ -15,6 +31,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 @layer utilities {
@@ -23,22 +40,37 @@ body {
   }
 }
 
-/* Custom scrollbar for table - dark theme */
+/* Custom scrollbar - theme aware */
 .overflow-x-auto::-webkit-scrollbar {
   height: 8px;
 }
 
 .overflow-x-auto::-webkit-scrollbar-track {
-  background: #1e293b;
+  background: #e2e8f0;
   border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.dark .overflow-x-auto::-webkit-scrollbar-track {
+  background: #1e293b;
 }
 
 .overflow-x-auto::-webkit-scrollbar-thumb {
-  background: #475569;
+  background: #cbd5e1;
   border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.dark .overflow-x-auto::-webkit-scrollbar-thumb {
+  background: #475569;
 }
 
 .overflow-x-auto::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+  transition: background-color 0.3s ease;
+}
+
+.dark .overflow-x-auto::-webkit-scrollbar-thumb:hover {
   background: #64748b;
 }
 

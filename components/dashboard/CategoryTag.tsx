@@ -3,9 +3,14 @@ interface CategoryTagProps {
 }
 
 export default function CategoryTag({ category }: CategoryTagProps) {
-  // Simple gray tag for dark theme - matches the reference design
   return (
-    <span className="inline-flex items-center rounded-full bg-gray-700 px-2.5 py-0.5 text-xs font-medium text-gray-300">
+    <span
+      className="inline-block rounded-md px-2.5 py-1 text-xs"
+      style={{
+        background: '#334155',
+        color: '#94a3b8',
+      }}
+    >
       {category}
     </span>
   )

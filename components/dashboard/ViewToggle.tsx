@@ -10,7 +10,7 @@ export default function ViewToggle({ view, onViewChange }: ViewToggleProps) {
     <div className="flex rounded-lg border border-gray-600 bg-transparent p-1">
       <button
         onClick={() => onViewChange('table')}
-        className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+        className={`rounded-md px-3 py-2 text-sm font-medium transition-colors sm:px-4 sm:text-base ${
           view === 'table'
             ? 'bg-blue-600 text-white'
             : 'bg-transparent text-gray-400 hover:text-white'
@@ -20,7 +20,7 @@ export default function ViewToggle({ view, onViewChange }: ViewToggleProps) {
       </button>
       <button
         onClick={() => onViewChange('grid')}
-        className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+        className={`rounded-md px-3 py-2 text-sm font-medium transition-colors sm:px-4 sm:text-base ${
           view === 'grid'
             ? 'bg-blue-600 text-white'
             : 'bg-transparent text-gray-400 hover:text-white'

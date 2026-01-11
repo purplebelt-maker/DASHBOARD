@@ -42,3 +42,33 @@ body {
   background: #64748b;
 }
 
+/* Markets Grid Layout */
+.markets-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+/* Responsive grid adjustments */
+@media (min-width: 640px) {
+  .markets-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .markets-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1536px) {
+  .markets-grid {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+

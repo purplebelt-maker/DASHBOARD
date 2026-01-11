@@ -140,6 +140,19 @@ export default function MarketsTable({ markets }: MarketsTableProps) {
                   </td>
                 </tr>
               ))}
+              {/* More markets row */}
+              <tr className="transition-colors hover:bg-[#334155]">
+                <td
+                  colSpan={10}
+                  style={{
+                    textAlign: 'center',
+                    color: '#94a3b8',
+                    padding: '20px',
+                  }}
+                >
+                  More markets at Polymarket.com
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>

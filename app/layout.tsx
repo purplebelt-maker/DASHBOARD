@@ -5,6 +5,11 @@ export const metadata: Metadata = {
   title: 'Polymarket Dashboard | Live Prediction Market Data',
   description: 'Live prediction market data dashboard showing top Polymarket markets by volume',
   viewport: 'width=device-width, initial-scale=1',
+  icons: {
+    icon: '/prediction-market-edge-logo.png',
+    shortcut: '/prediction-market-edge-logo.png',
+    apple: '/prediction-market-edge-logo.png',
+  },
 }
 
 export default function RootLayout({

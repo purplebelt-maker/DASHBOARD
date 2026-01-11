@@ -1,3 +1,4 @@
+import React from 'react'
 import { Market } from '@/types'
 
 interface StatusBadgeProps {
@@ -6,19 +7,28 @@ interface StatusBadgeProps {
 
 const statusConfig: Record<
   Market['status'],
-  { label: string; className: string }
+  { label: string; style: React.CSSProperties }
 > = {
   active: {
     label: 'Open',
-    className: 'bg-green-600 text-white',
+    style: {
+      background: '#10b981',
+      color: '#fff',
+    },
   },
   closed: {
     label: 'Closed',
-    className: 'bg-gray-600 text-gray-300',
+    style: {
+      background: '#475569',
+      color: '#cbd5e1',
+    },
   },
   resolved: {
     label: 'Resolved',
-    className: 'bg-blue-600 text-white',
+    style: {
+      background: '#3b82f6',
+      color: '#fff',
+    },
   },
 }
 
@@ -27,7 +37,8 @@ export default function StatusBadge({ status }: StatusBadgeProps) {
 
   return (
     <span
-      className={`inline-flex items-center rounded px-2 py-1 text-xs font-medium ${config.className}`}
+      className="inline-flex items-center rounded px-2 py-1 text-xs font-medium"
+      style={config.style}
     >
       {config.label}
     </span>

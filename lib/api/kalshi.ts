@@ -125,14 +125,12 @@ export async function fetchKalshiMarkets(
   // Build query parameters
   const params = new URLSearchParams({
     limit: limit.toString(),
+    status: 'open',
   })
   
   if (cursor) {
     params.append('cursor', cursor)
   }
-  
-  // Note: Kalshi API might have additional optional parameters
-  // We'll start with basic parameters and adjust based on response
   
   // For signing, use path without query parameters
   const signPath = '/markets'
@@ -153,12 +151,6 @@ export async function fetchKalshiMarkets(
     
     if (!response.ok) {
       const errorText = await response.text()
-      console.error('Kalshi API Error Response:', {
-        status: response.status,
-        statusText: response.statusText,
-        body: errorText,
-        url: `${baseUrl}${path}`,
-      })
       throw new Error(`Kalshi API error: ${response.status} ${response.statusText} - ${errorText}`)
     }
     
@@ -166,7 +158,6 @@ export async function fetchKalshiMarkets(
     return data
   } catch (error) {
     if (error instanceof Error) {
-      console.error('Kalshi API Request Error:', error.message)
       throw error
     }
     throw new Error(`Unknown error fetching Kalshi markets: ${error}`)

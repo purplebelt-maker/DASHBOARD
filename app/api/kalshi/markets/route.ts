@@ -4,7 +4,7 @@
  */
 import { NextRequest, NextResponse } from 'next/server'
 import { fetchKalshiMarkets } from '@/lib/api/kalshi'
-import { transformKalshiMarkets } from '@/lib/utils/kalshiTransform'
+import { transformKalshiMarkets, filterSportsMarkets } from '@/lib/utils/kalshiTransform'
 
 export async function GET(request: NextRequest) {
   try {
@@ -22,8 +22,11 @@ export async function GET(request: NextRequest) {
     // Transform Kalshi data to our Market format
     const markets = transformKalshiMarkets(kalshiResponse.markets || [])
     
+    // Filter out sports markets based on question text keywords
+    const filteredMarkets = filterSportsMarkets(markets)
+    
     // Sort markets to prioritize those with trading activity
-    const sortedMarkets = markets.sort((a, b) => {
+    const sortedMarkets = filteredMarkets.sort((a, b) => {
       // First, prioritize markets with actual price data (not 0/100)
       const aHasPrice = a.probabilityYes > 0 && a.probabilityYes < 100
       const bHasPrice = b.probabilityYes > 0 && b.probabilityYes < 100

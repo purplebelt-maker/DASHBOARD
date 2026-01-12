@@ -180,7 +180,7 @@ export default function MarketsTable({ markets }: MarketsTableProps) {
                     padding: '20px',
                   }}
                 >
-                  More markets at Polymarket.com
+                  More markets at Kalshi.com
                 </td>
               </tr>
             </tbody>

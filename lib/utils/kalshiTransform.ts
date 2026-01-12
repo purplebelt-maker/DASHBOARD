@@ -18,99 +18,69 @@ function mapStatus(kalshiStatus?: string, marketState?: string): Market['status'
 }
 
 /**
- * Extract category from Kalshi market data
- * Since Kalshi API returns "General" for all markets, we extract from ticker prefixes and question text
+ * Check if a market is a sports market based on question text keywords
+ * Based on Polymarket implementation guide
  */
-function extractCategory(market: any): string {
-  // First, try the category field (even though it's usually "General")
-  if (market.category && market.category !== 'General') {
-    return market.category
+export function isSportsMarket(market: Market): boolean {
+  const question = (market.question || '').toLowerCase()
+  
+  // Sports keywords from Polymarket guide
+  const sportsKeywords = [
+    'game',
+    'match',
+    'team',
+    'player',
+    'super bowl',
+    'world cup',
+    'championship',
+    'playoff',
+    'quarterback',
+    'touchdown',
+    'field goal',
+    'points scored',
+    'yards',
+    'nfl',
+    'nba',
+    'mlb',
+    'nhl',
+    'soccer',
+    'football',
+    'basketball',
+    'baseball',
+    'hockey',
+    'athlete',
+    'coach',
+    'stadium',
+    'halftime',
+    'overtime',
+    'mvp',
+    'all-star',
+    'draft',
+    'trade',
+    'roster',
+    'injury',
+    'season',
+    'playoffs',
+    'finals',
+    'semifinals',
+    'quarterfinals',
+  ]
+  
+  // Check if question contains any sports keyword
+  for (const keyword of sportsKeywords) {
+    if (question.includes(keyword)) {
+      return true
+    }
   }
   
-  // Extract from ticker prefix
-  const ticker = (market.ticker || market.id || '').toUpperCase()
-  const eventTicker = (market.event_ticker || market.eventTicker || '').toUpperCase()
-  const mveTicker = (market.mve_collection_ticker || market.mveCollectionTicker || '').toUpperCase()
-  
-  // Check ticker prefixes for category
-  const tickerToCheck = ticker || eventTicker || mveTicker
-  
-  // Sports categories
-  if (tickerToCheck.startsWith('KXMVENFL') || tickerToCheck.includes('NFL')) {
-    return 'NFL'
-  }
-  if (tickerToCheck.startsWith('KXMVENBA') || tickerToCheck.includes('NBA')) {
-    return 'NBA'
-  }
-  if (tickerToCheck.startsWith('KXMVEMLB') || tickerToCheck.includes('MLB')) {
-    return 'MLB'
-  }
-  if (tickerToCheck.startsWith('KXMVENHL') || tickerToCheck.includes('NHL')) {
-    return 'NHL'
-  }
-  if (tickerToCheck.startsWith('KXMVESPORTS') || tickerToCheck.startsWith('KXMVESOCCER')) {
-    return 'Sports'
-  }
-  
-  // Analyze question text for category keywords
-  const question = (market.title || market.question || '').toLowerCase()
-  
-  // Politics
-  if (question.includes('president') || question.includes('election') || 
-      question.includes('senate') || question.includes('congress') ||
-      question.includes('governor') || question.includes('mayor') ||
-      question.includes('vote') || question.includes('candidate') ||
-      question.includes('democrat') || question.includes('republican')) {
-    return 'Politics'
-  }
-  
-  // Economics
-  if (question.includes('gdp') || question.includes('inflation') ||
-      question.includes('unemployment') || question.includes('fed') ||
-      question.includes('interest rate') || question.includes('recession') ||
-      question.includes('stock market') || question.includes('dow') ||
-      question.includes('s&p') || question.includes('nasdaq')) {
-    return 'Economics'
-  }
-  
-  // Crypto
-  if (question.includes('bitcoin') || question.includes('ethereum') ||
-      question.includes('crypto') || question.includes('btc') ||
-      question.includes('eth') || question.includes('blockchain')) {
-    return 'Crypto'
-  }
-  
-  // Climate/Environment
-  if (question.includes('temperature') || question.includes('climate') ||
-      question.includes('weather') || question.includes('hurricane') ||
-      question.includes('tornado') || question.includes('drought')) {
-    return 'Climate'
-  }
-  
-  // Technology
-  if (question.includes('ai') || question.includes('artificial intelligence') ||
-      question.includes('tech') || question.includes('apple') ||
-      question.includes('google') || question.includes('microsoft') ||
-      question.includes('meta') || question.includes('tesla')) {
-    return 'Technology'
-  }
-  
-  // Entertainment
-  if (question.includes('oscar') || question.includes('grammy') ||
-      question.includes('movie') || question.includes('film') ||
-      question.includes('music') || question.includes('award')) {
-    return 'Entertainment'
-  }
-  
-  // Sports (from question text)
-  if (question.includes('game') || question.includes('match') ||
-      question.includes('championship') || question.includes('playoff') ||
-      question.includes('super bowl') || question.includes('world cup')) {
-    return 'Sports'
-  }
-  
-  // Default to General if no category found
-  return 'General'
+  return false
+}
+
+/**
+ * Filter out sports markets from an array of markets
+ */
+export function filterSportsMarkets(markets: Market[]): Market[] {
+  return markets.filter(market => !isSportsMarket(market))
 }
 
 /**
@@ -279,8 +249,8 @@ export function transformKalshiMarket(kalshiMarket: any): Market {
     kalshiMarket.market_state || kalshiMarket.marketState
   )
   
-  // Category - Extract from ticker prefix, event_ticker, or question analysis
-  const category = extractCategory(kalshiMarket)
+  // Category - Set to General for all markets (as per client request)
+  const category = 'General'
   
   // Question/Title - Use title field as-is (client confirmed questions starting with "yes" are correct)
   const question = kalshiMarket.title || 

@@ -43,7 +43,7 @@ export default function ControlBar({ view, onViewChange }: ControlBarProps) {
         <div className="mb-4 flex flex-wrap items-center justify-center gap-2 text-sm text-gray-600 dark:text-gray-400 sm:text-base transition-colors duration-300">
           <span className="flex items-center">
             <span className="mr-2 h-2 w-2 animate-pulse rounded-full bg-green-500"></span>
-            Live data from Polymarket
+            Live data from Kalshi
           </span>
           <span>•</span>
           <span>Top active markets by volume</span>
@@ -56,7 +56,7 @@ export default function ControlBar({ view, onViewChange }: ControlBarProps) {
         {/* Title and View Toggle - Bottom Row - Title can wrap */}
         <div className="flex items-center justify-between gap-2 sm:gap-3">
           <h2 className="min-w-0 flex-1 break-words text-xl font-semibold text-blue-600 dark:text-blue-400 underline sm:text-2xl lg:text-3xl transition-colors duration-300">
-            Polymarket — Top Markets Right Now
+            Kalshi — Top Markets Right Now
           </h2>
           <div className="flex-shrink-0">
             <ViewToggle view={view} onViewChange={onViewChange} />

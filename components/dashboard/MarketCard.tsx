@@ -174,7 +174,7 @@ export default function MarketCard({ market }: MarketCardProps) {
             fontStyle: 'italic',
           }}
         >
-          Resolves via: Polymarket API
+          Resolves via: Kalshi API
         </p>
       </div>
     </div>

@@ -7,6 +7,7 @@ import { calculateCountdown, formatCountdown } from '@/lib/utils/countdown'
 import CategoryTag from './CategoryTag'
 import StatusBadge from './StatusBadge'
 import ProbabilityBar from './ProbabilityBar'
+import QuestionText from './QuestionText'
 
 interface MarketsTableProps {
   markets: Market[]
@@ -32,22 +33,6 @@ export default function MarketsTable({ markets }: MarketsTableProps) {
     return () => clearInterval(interval)
   }, [markets])
 
-  // Function to wrap text after 7 words on large screens
-  const formatQuestion = (question: string, isLargeScreen: boolean = false) => {
-    if (!isLargeScreen) {
-      return question
-    }
-    const words = question.split(' ')
-    if (words.length <= 7) {
-      return question
-    }
-    // Split into chunks of 7 words and join with line breaks
-    const chunks: string[] = []
-    for (let i = 0; i < words.length; i += 7) {
-      chunks.push(words.slice(i, i + 7).join(' '))
-    }
-    return chunks
-  }
 
   return (
     <div className="w-full overflow-x-auto lg:overflow-x-visible">
@@ -118,23 +103,12 @@ export default function MarketsTable({ markets }: MarketsTableProps) {
                   key={market.id}
                   className="transition-colors hover:bg-slate-200 dark:hover:bg-[#334155] duration-300 cursor-pointer"
                 >
-                  <td className="px-3 py-4 text-base font-semibold text-gray-900 dark:text-white sm:px-4 lg:px-4 transition-colors duration-300" title={market.question}>
+                  <td className="px-3 py-4 text-base font-semibold text-gray-900 dark:text-white sm:px-4 lg:px-4 transition-colors duration-300">
                     <div className="break-words">
-                      <span className="hidden lg:inline">
-                        {(() => {
-                          const formatted = formatQuestion(market.question, true)
-                          if (Array.isArray(formatted)) {
-                            return formatted.map((line, index) => (
-                              <span key={index}>
-                                {line}
-                                {index < formatted.length - 1 && <br />}
-                              </span>
-                            ))
-                          }
-                          return formatted
-                        })()}
-                      </span>
-                      <span className="lg:hidden">{market.question}</span>
+                      <QuestionText 
+                        question={market.question} 
+                        className="text-gray-900 dark:text-white font-semibold transition-colors duration-300"
+                      />
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-2 py-4 text-base sm:px-2 lg:px-2">

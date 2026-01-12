@@ -9,12 +9,12 @@ import { transformKalshiMarkets, filterSportsMarkets } from '@/lib/utils/kalshiT
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams
-    const limit = parseInt(searchParams.get('limit') || '100', 10)
+    const limit = parseInt(searchParams.get('limit') || '25', 10)
     const cursor = searchParams.get('cursor') || undefined
     
-    // Fetch more markets than requested to find ones with trading activity
-    // Many markets may have no trading, so fetch 3-5x more to find active ones
-    const fetchLimit = Math.max(limit * 3, 300)
+    // Fetch more markets than requested to find ones with trading activity and after filtering
+    // Many markets may have no trading or be sports markets, so fetch 3x more to find active non-sports ones
+    const fetchLimit = limit * 3
     
     // Fetch markets from Kalshi
     const kalshiResponse = await fetchKalshiMarkets(fetchLimit, cursor)

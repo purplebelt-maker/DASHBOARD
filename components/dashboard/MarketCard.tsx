@@ -5,6 +5,7 @@ import { formatCurrency, formatDate } from '@/lib/utils/format'
 import { calculateCountdown, formatCountdown } from '@/lib/utils/countdown'
 import CategoryTag from './CategoryTag'
 import StatusBadge from './StatusBadge'
+import QuestionText from './QuestionText'
 
 interface MarketCardProps {
   market: Market
@@ -28,7 +29,7 @@ export default function MarketCard({ market }: MarketCardProps) {
           lineHeight: 1.4,
         }}
       >
-        {market.question}
+        <QuestionText question={market.question} />
       </h3>
 
       {/* Category - Reduced gap */}

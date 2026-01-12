@@ -20,7 +20,7 @@ export default function Home() {
       setLoading(true)
       setError(null)
       
-      const response = await fetch('/api/kalshi/markets?limit=25')
+      const response = await fetch('/api/kalshi/markets?limit=100')
       
       if (!response.ok) {
         throw new Error(`Failed to fetch markets: ${response.statusText}`)

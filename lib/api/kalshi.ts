@@ -93,7 +93,7 @@ function createAuthHeaders(
  * This should be called from a server-side API route
  */
 export async function fetchKalshiMarkets(
-  limit: number = 25,
+  limit: number = 100,
   cursor?: string
 ): Promise<KalshiMarketsResponse> {
   const baseUrl = process.env.NEXT_PUBLIC_KALSHI_API_BASE_URL || 

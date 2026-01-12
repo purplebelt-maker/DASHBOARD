@@ -7,6 +7,7 @@ import MarketsTable from '@/components/dashboard/MarketsTable'
 import MarketsGrid from '@/components/dashboard/MarketsGrid'
 import Footer from '@/components/dashboard/Footer'
 import ThemeToggle from '@/components/dashboard/ThemeToggle'
+import PrivacyModal from '@/components/dashboard/PrivacyModal'
 import { Market } from '@/types'
 
 export default function Home() {
@@ -57,6 +58,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0f172a] transition-colors duration-300">
+      <PrivacyModal />
       <ThemeToggle />
       <Header />
       <ControlBar view={view} onViewChange={setView} />

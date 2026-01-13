@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Header from '@/components/dashboard/Header'
 import ControlBar from '@/components/dashboard/ControlBar'
 import MarketsTable from '@/components/dashboard/MarketsTable'
@@ -8,17 +8,26 @@ import MarketsGrid from '@/components/dashboard/MarketsGrid'
 import Footer from '@/components/dashboard/Footer'
 import ThemeToggle from '@/components/dashboard/ThemeToggle'
 import PrivacyModal from '@/components/dashboard/PrivacyModal'
+import RefreshNotification from '@/components/dashboard/RefreshNotification'
 import { Market } from '@/types'
+
+
+
+const REFRESH_INTERVAL_MS = 240000
 
 export default function Home() {
   const [view, setView] = useState<'table' | 'grid'>('table')
   const [markets, setMarkets] = useState<Market[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [lastRefreshTime, setLastRefreshTime] = useState<Date>(new Date())
+  const [showRefreshNotification, setShowRefreshNotification] = useState(false)
 
-  const fetchMarkets = async () => {
+  const fetchMarkets = useCallback(async (isRefresh = false) => {
     try {
-      setLoading(true)
+      if (!isRefresh) {
+        setLoading(true)
+      }
       setError(null)
       
       const response = await fetch('/api/markets?limit=25')
@@ -34,29 +43,39 @@ export default function Home() {
       }
       
       setMarkets(data.markets || [])
+      setLastRefreshTime(new Date())
+      
+      if (isRefresh) {
+        setShowRefreshNotification(true)
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch markets')
+      if (!isRefresh) {
+        setLoading(false)
+      }
     } finally {
-      setLoading(false)
+      if (!isRefresh) {
+        setLoading(false)
+      }
     }
-  }
+  }, [])
 
   useEffect(() => {
-    fetchMarkets()
-    const refreshInterval = parseInt(
-      process.env.NEXT_PUBLIC_API_REFRESH_INTERVAL || '60000',
-      10
-    )
-    const interval = setInterval(fetchMarkets, refreshInterval)
+    fetchMarkets(false)
+    const interval = setInterval(() => fetchMarkets(true), REFRESH_INTERVAL_MS)
     return () => clearInterval(interval)
-  }, [])
+  }, [fetchMarkets])
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0f172a] transition-colors duration-300">
       <PrivacyModal />
       <ThemeToggle />
+      <RefreshNotification
+        show={showRefreshNotification}
+        onComplete={() => setShowRefreshNotification(false)}
+      />
       <Header />
-      <ControlBar view={view} onViewChange={setView} />
+      <ControlBar view={view} onViewChange={setView} lastRefreshTime={lastRefreshTime} />
       <main className="container mx-auto px-4 pb-4 pt-8 sm:px-6 lg:px-8">
         {loading && markets.length === 0 ? (
           <div className="flex items-center justify-center py-12">

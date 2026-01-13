@@ -6,28 +6,31 @@ import ViewToggle from './ViewToggle'
 interface ControlBarProps {
   view: 'table' | 'grid'
   onViewChange: (view: 'table' | 'grid') => void
+  lastRefreshTime?: Date
 }
 
-export default function ControlBar({ view, onViewChange }: ControlBarProps) {
+export default function ControlBar({ view, onViewChange, lastRefreshTime }: ControlBarProps) {
   const [lastUpdated, setLastUpdated] = useState<string>('')
-  const [nextRefresh, setNextRefresh] = useState<number>(60)
 
   useEffect(() => {
-    const now = new Date()
-    setLastUpdated(
-      now.toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-      })
-    )
+    const updateTime = () => {
+      const timeToShow = lastRefreshTime || new Date()
+      setLastUpdated(
+        timeToShow.toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+        })
+      )
+    }
 
-    const interval = setInterval(() => {
-      setNextRefresh((prev) => (prev <= 1 ? 60 : prev - 1))
-    }, 1000)
+    updateTime()
 
-    return () => clearInterval(interval)
-  }, [])
+    const timeInterval = setInterval(updateTime, 60000)
+
+    return () => {
+      clearInterval(timeInterval)
+    }
+  }, [lastRefreshTime])
 
   return (
     <div className="container mx-auto my-6 px-4 sm:px-6 lg:px-8">
@@ -41,8 +44,6 @@ export default function ControlBar({ view, onViewChange }: ControlBarProps) {
           <span>Top active markets by volume</span>
           <span>•</span>
           <span>Last updated: {lastUpdated}</span>
-          <span>•</span>
-          <span className="text-blue-600 dark:text-blue-400 transition-colors duration-300">Next refresh in {nextRefresh}s</span>
         </div>
 
         <div className="flex items-center justify-between gap-2 sm:gap-3">

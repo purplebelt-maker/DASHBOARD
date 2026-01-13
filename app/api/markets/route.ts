@@ -17,21 +17,23 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get('category') || undefined
     
     const limit = 25
-    // Fetch a large number to ensure we capture all trending markets
-    // Polymarket's trending page shows markets sorted by 24hr volume, so we need to fetch many
-    const fetchLimit = 5000
+    // Fetch more markets than needed to account for sports filtering
+    // We'll fetch 100 markets, filter out sports, then take top 25
+    // This ensures we get 25 non-sports markets even if some are filtered out
+    const fetchLimit = 100
     
     // Use same parameters as Polymarket trending page
-    // Sort by volume (24h volume), only active markets, not closed
+    // Sort by 24hr volume (descending - highest first), only active markets, not closed
     // Frequency: All (default), Status: Active (active=true, closed=false)
-    // Note: We fetch with sort='volume' but will re-sort by 24hr volume ourselves for accuracy
+    // IMPORTANT: Using order='volume24hr' with ascending=false to get top markets by 24hr volume directly from API
     let polymarketResponse
     try {
       polymarketResponse = await fetchPolymarketMarkets({
         limit: fetchLimit,
         cursor: cursor,
         category: category,
-        sort: 'volume', // API sort parameter - we'll re-sort by 24hr volume for accuracy
+        order: 'volume24hr', // Sort by 24hr volume (direct API support)
+        ascending: false, // Descending order - highest volume first
         closed: false, // Exclude closed markets (Status: Active)
         include: 'condition',
         active: true, // Only active markets (Status: Active)
@@ -170,8 +172,9 @@ export async function GET(request: NextRequest) {
       return vol24h > 0
     })
     
-    // Sort by 24hr volume (descending) to match Polymarket's trending page
-    // Secondary sort by total volume, then liquidity
+    // Markets are already sorted by 24hr volume (descending) from the API (order=volume24hr, ascending=false)
+    // But we'll do a final sort to ensure accuracy and handle any edge cases
+    // Secondary sort by total volume, then liquidity for tie-breaking
     const sortedMarkets = marketsWithVolume.sort((a, b) => {
       const aVol24h = a._sortVolume24h || 0
       const bVol24h = b._sortVolume24h || 0
@@ -193,6 +196,7 @@ export async function GET(request: NextRequest) {
     })
     
     // Return top 25 trending markets (matching Polymarket's default display)
+    // These are already sorted by 24hr volume (descending) from API - highest volume first
     const limitedMarkets = sortedMarkets.slice(0, limit)
     
     const response = NextResponse.json({

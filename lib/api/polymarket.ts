@@ -107,6 +107,8 @@ export async function fetchPolymarketMarkets(
     status?: 'open' | 'closed' | 'resolved'
     category?: string
     sort?: 'volume' | 'liquidity' | 'newest' | 'oldest'
+    order?: 'volume24hr' | 'volume' | 'liquidity' | 'newest' | 'oldest'
+    ascending?: boolean
     closed?: boolean
     include?: string
     active?: boolean
@@ -138,9 +140,21 @@ export async function fetchPolymarketMarkets(
     params.append('category', options.category)
   }
   
-  if (options?.sort) {
+  // Use 'order' parameter for 24hr volume sorting (preferred)
+  if (options?.order) {
+    params.append('order', options.order)
+    // Set ascending parameter (false = descending = highest first)
+    if (options.ascending !== undefined) {
+      params.append('ascending', String(options.ascending))
+    } else {
+      // Default to descending (highest first) for volume sorting
+      params.append('ascending', 'false')
+    }
+  } else if (options?.sort) {
+    // Fallback to 'sort' parameter for backward compatibility
     params.append('sort', options.sort)
   } else {
+    // Default: sort by volume
     params.append('sort', 'volume')
   }
 

@@ -90,7 +90,15 @@ export default function MarketsTable({ markets }: MarketsTableProps) {
       <th
         scope="col"
         onClick={() => handleSort(field)}
-        className="px-2 py-3 text-right text-sm font-bold uppercase tracking-wider text-gray-700 dark:text-gray-400 sm:px-3 lg:px-3 transition-colors duration-300 cursor-pointer hover:bg-slate-300 dark:hover:bg-[#475569] select-none"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            handleSort(field)
+          }
+        }}
+        tabIndex={0}
+        aria-sort={isActive ? (isAsc ? 'ascending' : 'descending') : 'none'}
+        className="px-2 py-3 text-right text-sm font-bold uppercase tracking-wider text-gray-700 dark:text-gray-400 sm:px-3 lg:px-3 transition-colors duration-300 cursor-pointer hover:bg-slate-300 dark:hover:bg-[#475569] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded select-none"
       >
         <div className="flex items-center justify-end gap-1">
           <span>{children}</span>
@@ -101,6 +109,7 @@ export default function MarketsTable({ markets }: MarketsTableProps) {
               }`}
               fill="currentColor"
               viewBox="0 0 20 20"
+              aria-hidden="true"
             >
               <path d="M5 12l5-5 5 5H5z" />
             </svg>
@@ -110,6 +119,7 @@ export default function MarketsTable({ markets }: MarketsTableProps) {
               }`}
               fill="currentColor"
               viewBox="0 0 20 20"
+              aria-hidden="true"
             >
               <path d="M5 8l5 5 5-5H5z" />
             </svg>
@@ -177,7 +187,15 @@ export default function MarketsTable({ markets }: MarketsTableProps) {
               {sortedMarkets.map((market) => (
                 <tr
                   key={market.id}
-                  className="transition-colors hover:bg-slate-200 dark:hover:bg-[#334155] duration-300 cursor-pointer"
+                  className="transition-all hover:bg-slate-200 dark:hover:bg-[#334155] duration-200 cursor-pointer hover:shadow-sm"
+                  role="row"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      window.open(`https://polymarket.com/event/${market.slug || market.id}`, '_blank')
+                    }
+                  }}
                 >
                   <td className="px-3 py-4 text-base font-semibold text-gray-900 dark:text-white sm:px-4 lg:px-4 transition-colors duration-300">
                     <div className="break-words text-gray-900 dark:text-white font-semibold transition-colors duration-300">
@@ -193,8 +211,18 @@ export default function MarketsTable({ markets }: MarketsTableProps) {
                       no={market.probabilityNo}
                     />
                   </td>
-                  <td className="whitespace-nowrap px-2 py-4 text-right font-mono text-gray-700 dark:text-gray-300 sm:px-3 lg:px-3 transition-colors duration-300">
-                    {formatChange(market.change24h)}
+                  <td className="whitespace-nowrap px-2 py-4 text-right font-mono text-sm font-medium sm:px-3 lg:px-3 transition-colors duration-300">
+                    <span
+                      className={
+                        market.change24h === null
+                          ? 'text-gray-500 dark:text-gray-400'
+                          : market.change24h >= 0
+                          ? 'text-green-600 dark:text-green-400'
+                          : 'text-red-600 dark:text-red-400'
+                      }
+                    >
+                      {formatChange(market.change24h)}
+                    </span>
                   </td>
                   <td className="whitespace-nowrap px-2 py-4 text-right font-mono text-gray-700 dark:text-gray-300 sm:px-3 lg:px-3 transition-colors duration-300">
                     {formatCurrency(market.liquidity)}

@@ -62,25 +62,47 @@ const sportsKeywordsSet = new Set([
   'quarterfinals',
 ])
 
-export function isSportsMarket(market: Market): boolean {
-  const question = (market.question || '').toLowerCase()
-  const category = (market.category || '').toLowerCase()
-  
-  if (category.includes('sports') || category.includes('sport')) {
-    return true
+export function isSportsMarket(market: Market | null | undefined): boolean {
+  if (!market) {
+    return false
   }
   
-  for (const keyword of sportsKeywordsSet) {
-    if (question.includes(keyword)) {
+  try {
+    const question = (market.question || '').toLowerCase()
+    const category = (market.category || '').toLowerCase()
+    
+    if (category.includes('sports') || category.includes('sport')) {
       return true
     }
+    
+    for (const keyword of sportsKeywordsSet) {
+      if (question.includes(keyword)) {
+        return true
+      }
+    }
+    
+    return false
+  } catch (error) {
+    // If there's any error checking, don't filter it out
+    console.error('Error in isSportsMarket:', error, market)
+    return false
   }
-  
-  return false
 }
 
 export function filterSportsMarkets(markets: Market[]): Market[] {
-  return markets.filter(market => !isSportsMarket(market))
+  if (!Array.isArray(markets)) {
+    return []
+  }
+  
+  return markets.filter(market => {
+    try {
+      return !isSportsMarket(market)
+    } catch (error) {
+      // If there's an error, include the market
+      console.error('Error filtering sports market:', error, market)
+      return true
+    }
+  })
 }
 
 function calculateProbability(market: PolymarketMarket): {
@@ -189,8 +211,10 @@ export function transformPolymarketMarket(polymarketMarket: PolymarketMarket): M
 export function transformPolymarketMarkets(polymarketMarkets: PolymarketMarket[]): Market[] {
   return polymarketMarkets
     .filter(market => {
-      const question = market.question || market.title || ''
-      return question.trim().length > 10
+      // Only filter out markets with no question at all
+      // Don't filter by question format (Will/Does/Do) - show all question types
+      const question = market.question || market.title || market.description || ''
+      return question.trim().length > 0
     })
     .map(transformPolymarketMarket)
 }

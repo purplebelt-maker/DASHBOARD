@@ -109,6 +109,7 @@ export async function fetchPolymarketMarkets(
     sort?: 'volume' | 'liquidity' | 'newest' | 'oldest'
     closed?: boolean
     include?: string
+    active?: boolean
   }
 ): Promise<PolymarketMarketsResponse> {
   const params = new URLSearchParams()
@@ -121,7 +122,9 @@ export async function fetchPolymarketMarkets(
     params.append('cursor', options.cursor)
   }
   
-  if (options?.status) {
+  if (options?.active !== undefined) {
+    params.append('active', String(options.active))
+  } else if (options?.status) {
     if (options.status === 'open') {
       params.append('active', 'true')
     } else {

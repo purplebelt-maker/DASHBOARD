@@ -27,9 +27,14 @@ function Header() {
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white sm:text-3xl lg:text-4xl transition-colors duration-300">
               Prediction Market Edge Dashboard
             </h1>
-            <p className="mt-2 text-base text-gray-600 dark:text-gray-400 sm:text-base lg:text-lg transition-colors duration-300">
-              Live Odds — Top Polymarket Markets by Volume
-            </p>
+            <div className="mt-2 text-center">
+              <p className="text-base text-gray-600 dark:text-gray-400 sm:text-base lg:text-lg transition-colors duration-300">
+                Live Probabilities — High-Volume Polymarket Markets
+              </p>
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-500 transition-colors duration-300">
+                Updated every 4 minutes
+              </p>
+            </div>
           </div>
         </div>
       </header>

@@ -16,6 +16,7 @@ import { Market } from '@/types'
 
 const REFRESH_INTERVAL_MS = 240000
 
+
 export default function Home() {
   const [view, setView] = useState<'table' | 'grid'>('table')
   const [markets, setMarkets] = useState<Market[]>([])
@@ -31,11 +32,12 @@ export default function Home() {
       }
       setError(null)
       
-      const cacheBuster = isRefresh ? `&_t=${Date.now()}` : ''
-      const response = await fetch(`/api/markets?limit=25${cacheBuster}`, {
-        cache: isRefresh ? 'no-store' : 'default',
+      const cacheBuster = isRefresh ? `?_t=${Date.now()}` : `?_t=${Date.now()}`
+      const response = await fetch(`/api/markets${cacheBuster}`, {
+        cache: 'no-store',
         headers: {
-          'Cache-Control': isRefresh ? 'no-cache, no-store, must-revalidate' : 'max-age=240',
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
         },
       })
       

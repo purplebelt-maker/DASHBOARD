@@ -13,6 +13,8 @@ export default function PrivacyModal() {
     }
   }, [])
 
+  
+
   const handleAccept = () => {
     localStorage.setItem('privacyPolicyAccepted', 'true')
     setIsOpen(false)
@@ -61,7 +63,7 @@ export default function PrivacyModal() {
             <div>
               <h3 className="mb-3 text-lg font-bold text-blue-400">Privacy Policy</h3>
               <p className="mb-4 text-gray-300">
-                Prediction Market Edge ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you use our dashboard.
+                Prediction Market Edge (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you use our dashboard.
               </p>
             </div>
 
@@ -79,7 +81,7 @@ export default function PrivacyModal() {
             <div>
               <h3 className="mb-3 text-lg font-bold text-blue-400">Data Usage</h3>
               <ul className="ml-6 list-disc space-y-2 text-gray-300">
-                <li>Market data is fetched from Polymarket's public API</li>
+                <li>Market data is fetched from Polymarket&apos;s public API</li>
                 <li>No user data is stored or transmitted to third parties</li>
                 <li>All data processing occurs locally in your browser</li>
               </ul>
@@ -112,7 +114,7 @@ export default function PrivacyModal() {
               <div>
                 <h4 className="mb-2 font-semibold text-gray-200">No Warranty:</h4>
                 <p className="text-gray-300">
-                  This dashboard is provided "as is" without warranties of any kind, either express or implied.
+                  This dashboard is provided &quot;as is&quot; without warranties of any kind, either express or implied.
                 </p>
               </div>
             </div>

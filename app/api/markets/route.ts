@@ -4,7 +4,7 @@
  */
 import { NextRequest, NextResponse } from 'next/server'
 import { fetchPolymarketMarkets } from '@/lib/api/polymarket'
-import { transformPolymarketMarkets } from '@/lib/utils/polymarketTransform'
+import { transformPolymarketMarkets, filterSportsMarkets } from '@/lib/utils/polymarketTransform'
 import { calculateCountdown } from '@/lib/utils/countdown'
 
 export async function GET(request: NextRequest) {
@@ -60,6 +60,10 @@ export async function GET(request: NextRequest) {
       return true
     })
     
+
+    // Filter out sports-related markets based on derived question/category
+    const nonSportsMarkets = filterSportsMarkets(activeMarkets)
+    
     // Create a map of transformed markets to raw markets to preserve full data
     const rawMarketsMap = new Map<string, any>()
     rawMarkets.forEach((rawMarket: any) => {
@@ -69,7 +73,7 @@ export async function GET(request: NextRequest) {
     })
     
     // Enrich filtered markets with full raw data (events, series, etc.)
-    const enrichedMarkets = activeMarkets.map(market => {
+    const enrichedMarkets = nonSportsMarkets.map(market => {
       const rawMarket = rawMarketsMap.get(market.id)
       if (rawMarket) {
         // Return the full raw market data along with transformed fields

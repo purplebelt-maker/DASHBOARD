@@ -197,17 +197,14 @@ export function transformPolymarketMarket(polymarketMarket: PolymarketMarket): M
   // Status
   const status = mapStatus(polymarketMarket)
   
-  // Category - use market category or event category
-  const category = polymarketMarket.category ||
-    polymarketMarket.events?.[0]?.category ||
-    polymarketMarket.series?.[0]?.title ||
-    'General'
-  
   // Question - use question field (most reliable)
   const question = polymarketMarket.question ||
     polymarketMarket.title ||
     polymarketMarket.description ||
     'Market'
+
+  // Derive category from question text (keywords)
+  const category = deriveCategoryFromQuestion(question)
   
   // 24h change - use oneDayPriceChange if available
   const change24h = polymarketMarket.oneDayPriceChange !== undefined
@@ -256,5 +253,60 @@ export function transformPolymarketMarkets(polymarketMarkets: PolymarketMarket[]
       return question.trim().length > 10
     })
     .map(transformPolymarketMarket)
+}
+
+/**
+ * Derive category from question text using keyword matching
+ */
+function deriveCategoryFromQuestion(question: string): string {
+  const q = (question || '').toLowerCase()
+  
+  const matchesAny = (keywords: string[]) => keywords.some(k => q.includes(k))
+  
+  if (matchesAny(['election', 'president', 'senate', 'house', 'congress', 'governor', 'trump', 'biden', 'vote', 'primary', 'parliament', 'referendum', 'policy'])) {
+    return 'Politics'
+  }
+  
+  if (matchesAny(['inflation', 'gdp', 'interest rate', 'fed', 'unemployment', 'revenue', 'tax', 'tariff', 'jobs report', 'cpi', 'economy', 'debt', 'deficit', 'treasury'])) {
+    return 'Economics'
+  }
+  
+  if (matchesAny(['crypto', 'bitcoin', 'btc', 'eth', 'ethereum', 'blockchain', 'token', 'defi', 'stablecoin', 'solana'])) {
+    return 'Crypto'
+  }
+  
+  if (matchesAny(['temperature', 'climate', 'carbon', 'co2', 'emissions', 'hottest', 'warming', 'rainfall', 'snow', 'hurricane', 'heat', 'weather'])) {
+    return 'Climate'
+  }
+  
+  if (matchesAny(['ai', 'artificial intelligence', 'llm', 'model', 'openai', 'google', 'microsoft', 'chip', 'nvidia', 'semiconductor', 'space', 'satellite', 'rocket'])) {
+    return 'Technology'
+  }
+  
+  if (matchesAny(['movie', 'film', 'box office', 'oscar', 'music', 'album', 'concert', 'game release', 'gta', 'entertainment', 'streaming'])) {
+    return 'Entertainment'
+  }
+  
+  if (matchesAny(['lawsuit', 'court', 'supreme court', 'legal', 'trial', 'verdict'])) {
+    return 'Legal'
+  }
+  
+  if (matchesAny(['covid', 'vaccine', 'virus', 'health', 'hospital', 'medical', 'disease'])) {
+    return 'Health'
+  }
+  
+  if (matchesAny(['nasa', 'space', 'astronaut', 'launch', 'mission', 'planet', 'mars'])) {
+    return 'Science'
+  }
+  
+  if (matchesAny(['company', 'stock', 'revenue', 'earnings', 'ipo', 'merger', 'acquisition'])) {
+    return 'Business'
+  }
+  
+  if (matchesAny(['football', 'nba', 'nfl', 'mlb', 'nhl', 'soccer', 'tennis', 'golf', 'fifa', 'super bowl', 'world cup', 'playoff', 'touchdown', 'goal', 'basketball', 'baseball', 'hockey'])) {
+    return 'Sports'
+  }
+  
+  return 'General'
 }
 

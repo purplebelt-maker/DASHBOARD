@@ -70,7 +70,7 @@ export default function PrivacyModal() {
               <h3 className="mb-3 text-lg font-bold text-blue-400">Information We Collect</h3>
               <ul className="ml-6 list-disc space-y-2 text-gray-300">
                 <li>We do not collect personal information from visitors to this dashboard</li>
-                <li>Market data displayed is sourced from public Kalshi API</li>
+                <li>Market data displayed is sourced from public Polymarket API</li>
                 <li>We may use browser cookies to store view preferences (table/grid view)</li>
               </ul>
             </div>
@@ -79,7 +79,7 @@ export default function PrivacyModal() {
             <div>
               <h3 className="mb-3 text-lg font-bold text-blue-400">Data Usage</h3>
               <ul className="ml-6 list-disc space-y-2 text-gray-300">
-                <li>Market data is fetched from Kalshi's public API</li>
+                <li>Market data is fetched from Polymarket's public API</li>
                 <li>No user data is stored or transmitted to third parties</li>
                 <li>All data processing occurs locally in your browser</li>
               </ul>

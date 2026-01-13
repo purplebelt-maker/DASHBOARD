@@ -3,8 +3,8 @@ import './globals.css'
 import { ThemeProvider } from '@/contexts/ThemeContext'
 
 export const metadata: Metadata = {
-  title: 'Kalshi Dashboard | Live Prediction Market Data',
-  description: 'Live prediction market data dashboard showing top Kalshi markets by volume',
+  title: 'Polymarket Dashboard | Live Prediction Market Data',
+  description: 'Live prediction market data dashboard showing top Polymarket markets by volume',
   viewport: 'width=device-width, initial-scale=1',
   icons: {
     icon: '/favicon.PNG',

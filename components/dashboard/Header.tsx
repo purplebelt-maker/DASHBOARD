@@ -32,7 +32,7 @@ export default function Header() {
               Prediction Market Edge Dashboard
             </h1>
             <p className="mt-2 text-base text-gray-600 dark:text-gray-400 sm:text-base lg:text-lg transition-colors duration-300">
-              Live Odds — Top Kalshi Markets by Volume
+              Live Odds — Top Polymarket Markets by Volume
             </p>
           </div>
         </div>

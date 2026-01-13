@@ -11,6 +11,8 @@ export interface Market {
   volumeTotal: number
   endDate: string // ISO date string
   status: 'active' | 'closed' | 'resolved'
+  // Allow additional fields from Polymarket API (events, series, etc.)
+  [key: string]: any
 }
 
 export type SortField = 'volume24h' | 'probability' | 'liquidity' | 'change24h'

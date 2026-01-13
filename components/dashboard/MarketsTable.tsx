@@ -7,7 +7,6 @@ import { calculateCountdown, formatCountdown } from '@/lib/utils/countdown'
 import CategoryTag from './CategoryTag'
 import StatusBadge from './StatusBadge'
 import ProbabilityBar from './ProbabilityBar'
-import QuestionText from './QuestionText'
 
 interface MarketsTableProps {
   markets: Market[]
@@ -104,11 +103,8 @@ export default function MarketsTable({ markets }: MarketsTableProps) {
                   className="transition-colors hover:bg-slate-200 dark:hover:bg-[#334155] duration-300 cursor-pointer"
                 >
                   <td className="px-3 py-4 text-base font-semibold text-gray-900 dark:text-white sm:px-4 lg:px-4 transition-colors duration-300">
-                    <div className="break-words">
-                      <QuestionText 
-                        question={market.question} 
-                        className="text-gray-900 dark:text-white font-semibold transition-colors duration-300"
-                      />
+                    <div className="break-words text-gray-900 dark:text-white font-semibold transition-colors duration-300">
+                      {market.question}
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-2 py-4 text-base sm:px-2 lg:px-2">
@@ -120,22 +116,30 @@ export default function MarketsTable({ markets }: MarketsTableProps) {
                       no={market.probabilityNo}
                     />
                   </td>
-                  <td className="whitespace-nowrap px-2 py-4 text-right text-base font-semibold text-gray-700 dark:text-gray-300 sm:px-3 lg:px-3 transition-colors duration-300">
+                  <td className="whitespace-nowrap px-2 py-4 text-right font-mono text-gray-700 dark:text-gray-300 sm:px-3 lg:px-3 transition-colors duration-300">
                     {formatChange(market.change24h)}
                   </td>
-                  <td className="whitespace-nowrap px-2 py-4 text-right text-base font-semibold text-gray-700 dark:text-gray-300 sm:px-3 lg:px-3 transition-colors duration-300">
+                  <td className="whitespace-nowrap px-2 py-4 text-right font-mono text-gray-700 dark:text-gray-300 sm:px-3 lg:px-3 transition-colors duration-300">
                     {formatCurrency(market.liquidity)}
                   </td>
-                  <td className="whitespace-nowrap px-2 py-4 text-right text-base font-semibold text-gray-900 dark:text-white sm:px-3 lg:px-3 transition-colors duration-300">
+                  <td className="whitespace-nowrap px-2 py-4 text-right font-mono text-gray-900 dark:text-white sm:px-3 lg:px-3 transition-colors duration-300">
                     {formatCurrency(market.volume24h)}
                   </td>
-                  <td className="whitespace-nowrap px-2 py-4 text-right text-base font-semibold text-gray-700 dark:text-gray-300 sm:px-3 lg:px-3 transition-colors duration-300">
+                  <td className="whitespace-nowrap px-2 py-4 text-right font-mono text-gray-700 dark:text-gray-300 sm:px-3 lg:px-3 transition-colors duration-300">
                     {formatCurrency(market.volumeTotal)}
                   </td>
                   <td className="whitespace-nowrap px-2 py-4 text-base font-semibold text-gray-700 dark:text-gray-300 sm:px-3 lg:px-3 transition-colors duration-300">
                     <div className="flex flex-col">
                       <span>{formatDate(market.endDate)}</span>
-                      <span className="text-sm font-medium text-gray-500 dark:text-gray-400 transition-colors duration-300">
+                      <span 
+                        className="transition-colors duration-300"
+                        style={{
+                          fontSize: '11px',
+                          marginTop: '4px',
+                          color: '#f59e0b',
+                          fontWeight: 500,
+                        }}
+                      >
                         {countdowns[market.id] || formatCountdown(calculateCountdown(market.endDate))}
                       </span>
                     </div>
@@ -154,7 +158,7 @@ export default function MarketsTable({ markets }: MarketsTableProps) {
                     padding: '20px',
                   }}
                 >
-                  More markets at Kalshi.com
+                  More markets at Polymarket.com
                 </td>
               </tr>
             </tbody>

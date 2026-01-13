@@ -1,9 +1,10 @@
 'use client'
 
+import { memo } from 'react'
 import Image from 'next/image'
 import { useTheme } from '@/contexts/ThemeContext'
 
-export default function Header() {
+function Header() {
   const { theme } = useTheme()
   const logoSrc = theme === 'light' ? '/logo-dark.png' : '/logo-light.png'
 
@@ -35,3 +36,5 @@ export default function Header() {
     </div>
   )
 }
+
+export default memo(Header)

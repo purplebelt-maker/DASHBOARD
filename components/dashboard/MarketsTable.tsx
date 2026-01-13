@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, memo } from 'react'
 import { Market } from '@/types'
 import { formatCurrency, formatDate, formatChange } from '@/lib/utils/format'
 import { calculateCountdown, formatCountdown } from '@/lib/utils/countdown'
@@ -15,7 +15,7 @@ interface MarketsTableProps {
 type SortField = 'liquidity' | 'volume24h' | 'volumeTotal'
 type SortDirection = 'asc' | 'desc'
 
-export default function MarketsTable({ markets }: MarketsTableProps) {
+function MarketsTable({ markets }: MarketsTableProps) {
   const [countdowns, setCountdowns] = useState<Record<string, string>>({})
   const [sortField, setSortField] = useState<SortField>('volume24h')
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc')
@@ -89,16 +89,17 @@ export default function MarketsTable({ markets }: MarketsTableProps) {
     return (
       <th
         scope="col"
+        className="px-2 py-3 text-right text-sm font-bold uppercase tracking-wider text-gray-700 dark:text-gray-400 sm:px-3 lg:px-3 cursor-pointer select-none transition-colors duration-300 hover:bg-slate-300 dark:hover:bg-[#475569]"
         onClick={() => handleSort(field)}
+        role="button"
+        tabIndex={0}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault()
             handleSort(field)
           }
         }}
-        tabIndex={0}
         aria-sort={isActive ? (isAsc ? 'ascending' : 'descending') : 'none'}
-        className="px-2 py-3 text-right text-sm font-bold uppercase tracking-wider text-gray-700 dark:text-gray-400 sm:px-3 lg:px-3 transition-colors duration-300 cursor-pointer hover:bg-slate-300 dark:hover:bg-[#475569] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded select-none"
       >
         <div className="flex items-center justify-end gap-1">
           <span>{children}</span>
@@ -224,13 +225,13 @@ export default function MarketsTable({ markets }: MarketsTableProps) {
                       {formatChange(market.change24h)}
                     </span>
                   </td>
-                  <td className="whitespace-nowrap px-2 py-4 text-right font-mono text-gray-700 dark:text-gray-300 sm:px-3 lg:px-3 transition-colors duration-300">
+                  <td className="whitespace-nowrap px-2 py-4 text-right font-mono text-sm font-medium text-gray-700 dark:text-gray-300 sm:px-3 lg:px-3 transition-colors duration-300">
                     {formatCurrency(market.liquidity)}
                   </td>
-                  <td className="whitespace-nowrap px-2 py-4 text-right font-mono text-gray-900 dark:text-white sm:px-3 lg:px-3 transition-colors duration-300">
+                  <td className="whitespace-nowrap px-2 py-4 text-right font-mono text-sm font-medium text-gray-900 dark:text-white sm:px-3 lg:px-3 transition-colors duration-300">
                     {formatCurrency(market.volume24h)}
                   </td>
-                  <td className="whitespace-nowrap px-2 py-4 text-right font-mono text-gray-700 dark:text-gray-300 sm:px-3 lg:px-3 transition-colors duration-300">
+                  <td className="whitespace-nowrap px-2 py-4 text-right font-mono text-sm font-medium text-gray-700 dark:text-gray-300 sm:px-3 lg:px-3 transition-colors duration-300">
                     {formatCurrency(market.volumeTotal)}
                   </td>
                   <td className="whitespace-nowrap px-2 py-4 text-base font-semibold text-gray-700 dark:text-gray-300 sm:px-3 lg:px-3 transition-colors duration-300">
@@ -240,7 +241,7 @@ export default function MarketsTable({ markets }: MarketsTableProps) {
                         className="transition-colors duration-300"
                         style={{
                           fontSize: '11px',
-                          marginTop: '4px',
+                          marginTop: '2px',
                           color: '#f59e0b',
                           fontWeight: 500,
                         }}
@@ -272,3 +273,5 @@ export default function MarketsTable({ markets }: MarketsTableProps) {
     </div>
   )
 }
+
+export default memo(MarketsTable)

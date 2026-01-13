@@ -1,5 +1,6 @@
 'use client'
 
+import { memo } from 'react'
 import { Market } from '@/types'
 import MarketCard from './MarketCard'
 
@@ -7,7 +8,7 @@ interface MarketsGridProps {
   markets: Market[]
 }
 
-export default function MarketsGrid({ markets }: MarketsGridProps) {
+function MarketsGrid({ markets }: MarketsGridProps) {
   return (
     <div className="markets-grid w-full">
       {markets.map((market) => (
@@ -16,4 +17,6 @@ export default function MarketsGrid({ markets }: MarketsGridProps) {
     </div>
   )
 }
+
+export default memo(MarketsGrid)
 

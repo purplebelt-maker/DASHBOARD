@@ -31,7 +31,13 @@ export default function Home() {
       }
       setError(null)
       
-      const response = await fetch('/api/markets?limit=25')
+      const cacheBuster = isRefresh ? `&_t=${Date.now()}` : ''
+      const response = await fetch(`/api/markets?limit=25${cacheBuster}`, {
+        cache: isRefresh ? 'no-store' : 'default',
+        headers: {
+          'Cache-Control': isRefresh ? 'no-cache, no-store, must-revalidate' : 'max-age=240',
+        },
+      })
       
       if (!response.ok) {
         throw new Error(`Failed to fetch markets: ${response.statusText}`)

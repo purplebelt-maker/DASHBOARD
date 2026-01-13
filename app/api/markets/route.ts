@@ -5,7 +5,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { fetchPolymarketMarkets } from '@/lib/api/polymarket'
 import { transformPolymarketMarkets, filterSportsMarkets } from '@/lib/utils/polymarketTransform'
-import { calculateCountdown } from '@/lib/utils/countdown'
 
 export async function GET(request: NextRequest) {
   try {
@@ -29,23 +28,22 @@ export async function GET(request: NextRequest) {
     const rawMarkets = polymarketResponse.data || polymarketResponse.markets || []
     const transformedMarkets = transformPolymarketMarkets(rawMarkets)
     
-    const now = new Date()
+    const now = Date.now()
     const activeMarkets = transformedMarkets.filter(market => {
       if (market.status === 'closed') {
         return false
       }
       
-      const endDate = new Date(market.endDate)
+      const endDate = new Date(market.endDate).getTime()
       if (endDate <= now) {
         return false
       }
       
-      const countdown = calculateCountdown(market.endDate)
-      if (countdown.days === 0 && countdown.hours === 0) {
-        return false
-      }
+      const timeRemaining = endDate - now
+      const daysRemaining = Math.floor(timeRemaining / (1000 * 60 * 60 * 24))
+      const hoursRemaining = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
       
-      return true
+      return daysRemaining > 0 || hoursRemaining > 0
     })
 
     const nonSportsMarkets = filterSportsMarkets(activeMarkets)
@@ -82,15 +80,18 @@ export async function GET(request: NextRequest) {
       const aHasPrice = a.probabilityYes > 0 && a.probabilityYes < 100
       const bHasPrice = b.probabilityYes > 0 && b.probabilityYes < 100
       
-      if (aHasPrice && !bHasPrice) return -1
-      if (!aHasPrice && bHasPrice) return 1
-      
-      if (b.volume24h !== a.volume24h) {
-        return b.volume24h - a.volume24h
+      if (aHasPrice !== bHasPrice) {
+        return aHasPrice ? -1 : 1
       }
       
-      if (b.volumeTotal !== a.volumeTotal) {
-        return b.volumeTotal - a.volumeTotal
+      const volume24hDiff = b.volume24h - a.volume24h
+      if (volume24hDiff !== 0) {
+        return volume24hDiff
+      }
+      
+      const volumeTotalDiff = b.volumeTotal - a.volumeTotal
+      if (volumeTotalDiff !== 0) {
+        return volumeTotalDiff
       }
       
       return b.liquidity - a.liquidity
@@ -98,11 +99,19 @@ export async function GET(request: NextRequest) {
     
     const limitedMarkets = sortedMarkets.slice(0, limit)
     
-    return NextResponse.json({
+    const response = NextResponse.json({
       markets: limitedMarkets,
       cursor: polymarketResponse.cursor || polymarketResponse.nextCursor,
       total: limitedMarkets.length,
+      timestamp: new Date().toISOString(),
     })
+    
+    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')
+    response.headers.set('Pragma', 'no-cache')
+    response.headers.set('Expires', '0')
+    response.headers.set('Surrogate-Control', 'no-store')
+    
+    return response
   } catch (error) {
     console.error('Error fetching Polymarket markets:', error)
     

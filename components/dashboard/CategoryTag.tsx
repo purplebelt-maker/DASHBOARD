@@ -1,3 +1,5 @@
+import { memo } from 'react'
+
 interface CategoryTagProps {
   category: string
 }
@@ -10,68 +12,68 @@ const categoryColors: Record<string, { bg: string; text: string; darkBg: string;
     darkText: 'dark:text-gray-400',
   },
   Politics: {
-    bg: 'bg-blue-100',
-    text: 'text-blue-800',
+    bg: 'bg-blue-200',
+    text: 'text-blue-900',
     darkBg: 'dark:bg-blue-900/40',
     darkText: 'dark:text-blue-300',
   },
   Economics: {
-    bg: 'bg-green-100',
-    text: 'text-green-800',
+    bg: 'bg-green-200',
+    text: 'text-green-900',
     darkBg: 'dark:bg-green-900/40',
     darkText: 'dark:text-green-300',
   },
   Crypto: {
-    bg: 'bg-yellow-100',
-    text: 'text-yellow-800',
-    darkBg: 'dark:bg-yellow-900/40',
-    darkText: 'dark:text-yellow-300',
+    bg: 'bg-amber-200',
+    text: 'text-amber-900',
+    darkBg: 'dark:bg-amber-900/40',
+    darkText: 'dark:text-amber-300',
   },
   Climate: {
-    bg: 'bg-emerald-100',
-    text: 'text-emerald-800',
+    bg: 'bg-emerald-200',
+    text: 'text-emerald-900',
     darkBg: 'dark:bg-emerald-900/40',
     darkText: 'dark:text-emerald-300',
   },
   Technology: {
-    bg: 'bg-purple-100',
-    text: 'text-purple-800',
+    bg: 'bg-purple-200',
+    text: 'text-purple-900',
     darkBg: 'dark:bg-purple-900/40',
     darkText: 'dark:text-purple-300',
   },
   Entertainment: {
-    bg: 'bg-pink-100',
-    text: 'text-pink-800',
+    bg: 'bg-pink-200',
+    text: 'text-pink-900',
     darkBg: 'dark:bg-pink-900/40',
     darkText: 'dark:text-pink-300',
   },
   Legal: {
-    bg: 'bg-indigo-100',
-    text: 'text-indigo-800',
+    bg: 'bg-indigo-200',
+    text: 'text-indigo-900',
     darkBg: 'dark:bg-indigo-900/40',
     darkText: 'dark:text-indigo-300',
   },
   Health: {
-    bg: 'bg-red-100',
-    text: 'text-red-800',
+    bg: 'bg-red-200',
+    text: 'text-red-900',
     darkBg: 'dark:bg-red-900/40',
     darkText: 'dark:text-red-300',
   },
   Science: {
-    bg: 'bg-cyan-100',
-    text: 'text-cyan-800',
+    bg: 'bg-cyan-200',
+    text: 'text-cyan-900',
     darkBg: 'dark:bg-cyan-900/40',
     darkText: 'dark:text-cyan-300',
   },
   Business: {
-    bg: 'bg-orange-100',
-    text: 'text-orange-800',
+    bg: 'bg-orange-200',
+    text: 'text-orange-900',
     darkBg: 'dark:bg-orange-900/40',
     darkText: 'dark:text-orange-300',
   },
 }
 
-export default function CategoryTag({ category }: CategoryTagProps) {
+function CategoryTag({ category }: CategoryTagProps) {
   const colors = categoryColors[category] || categoryColors.General
   
   return (
@@ -82,4 +84,6 @@ export default function CategoryTag({ category }: CategoryTagProps) {
     </span>
   )
 }
+
+export default memo(CategoryTag)
 

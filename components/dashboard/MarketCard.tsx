@@ -1,5 +1,6 @@
 'use client'
 
+import { memo, useMemo } from 'react'
 import { Market } from '@/types'
 import { formatCurrency, formatDate } from '@/lib/utils/format'
 import { calculateCountdown, formatCountdown } from '@/lib/utils/countdown'
@@ -10,15 +11,18 @@ interface MarketCardProps {
   market: Market
 }
 
-export default function MarketCard({ market }: MarketCardProps) {
-  const countdown = calculateCountdown(market.endDate)
-  const yesPercent = Math.round(market.probabilityYes)
-  const noPercent = Math.round(market.probabilityNo)
-  const total = yesPercent + noPercent
-  const yesWidth = total > 0 ? (yesPercent / total) * 100 : 0
+function MarketCard({ market }: MarketCardProps) {
+  const countdown = useMemo(() => calculateCountdown(market.endDate), [market.endDate])
+  const countdownText = useMemo(() => formatCountdown(countdown), [countdown])
+  const yesPercent = useMemo(() => Math.round(market.probabilityYes), [market.probabilityYes])
+  const noPercent = useMemo(() => Math.round(market.probabilityNo), [market.probabilityNo])
+  const yesWidth = useMemo(() => {
+    const total = yesPercent + noPercent
+    return total > 0 ? (yesPercent / total) * 100 : 0
+  }, [yesPercent, noPercent])
 
   return (
-    <div className="group relative rounded-lg border border-gray-200 dark:border-gray-700 bg-slate-100 dark:bg-[#1e293b] shadow-sm dark:shadow-none p-4 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500 dark:hover:border-[#60a5fa] hover:shadow-lg hover:shadow-blue-500/20 dark:hover:shadow-blue-500/10">
+    <div className="group relative rounded-lg border border-gray-400 dark:border-gray-600 bg-slate-100 dark:bg-[#1e293b] shadow-sm dark:shadow-none p-4 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500 dark:hover:border-[#60a5fa] hover:shadow-lg hover:shadow-blue-500/20 dark:hover:shadow-blue-500/10">
       <h3
         className="text-gray-900 dark:text-white font-semibold transition-colors duration-300"
         style={{
@@ -40,7 +44,7 @@ export default function MarketCard({ market }: MarketCardProps) {
             className="text-gray-700 dark:text-gray-300 font-semibold transition-colors duration-300"
             style={{
               fontSize: '14px',
-              marginBottom: '4px',
+              marginBottom: '2px',
             }}
           >
             {formatDate(market.endDate)}
@@ -52,7 +56,7 @@ export default function MarketCard({ market }: MarketCardProps) {
               fontSize: '12px',
             }}
           >
-            {formatCountdown(countdown)}
+            {countdownText}
           </div>
         </div>
         <StatusBadge status={market.status} />
@@ -94,7 +98,7 @@ export default function MarketCard({ market }: MarketCardProps) {
       <div className="mb-4 grid grid-cols-2 gap-3">
         <div>
           <div
-            className="mb-1 uppercase text-gray-600 dark:text-gray-400 font-semibold transition-colors duration-300"
+            className="mb-0.5 uppercase text-gray-600 dark:text-gray-400 font-semibold transition-colors duration-300"
             style={{
               fontSize: '12px',
             }}
@@ -113,7 +117,7 @@ export default function MarketCard({ market }: MarketCardProps) {
         </div>
         <div>
           <div
-            className="mb-1 uppercase text-gray-600 dark:text-gray-400 font-semibold transition-colors duration-300"
+            className="mb-0.5 uppercase text-gray-600 dark:text-gray-400 font-semibold transition-colors duration-300"
             style={{
               fontSize: '12px',
             }}
@@ -132,7 +136,7 @@ export default function MarketCard({ market }: MarketCardProps) {
         </div>
         <div>
           <div
-            className="mb-1 uppercase text-gray-600 dark:text-gray-400 font-semibold transition-colors duration-300"
+            className="mb-0.5 uppercase text-gray-600 dark:text-gray-400 font-semibold transition-colors duration-300"
             style={{
               fontSize: '12px',
             }}
@@ -172,3 +176,4 @@ export default function MarketCard({ market }: MarketCardProps) {
   )
 }
 
+export default memo(MarketCard)

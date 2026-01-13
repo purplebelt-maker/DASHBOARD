@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import { Market } from '@/types'
 
 interface StatusBadgeProps {
@@ -32,7 +32,7 @@ const statusConfig: Record<
   },
 }
 
-export default function StatusBadge({ status }: StatusBadgeProps) {
+function StatusBadge({ status }: StatusBadgeProps) {
   const config = statusConfig[status]
 
   return (
@@ -44,4 +44,6 @@ export default function StatusBadge({ status }: StatusBadgeProps) {
     </span>
   )
 }
+
+export default memo(StatusBadge)
 

@@ -1,14 +1,22 @@
+import { memo, useMemo } from 'react'
+
 interface ProbabilityBarProps {
   yes: number
   no: number
 }
 
-export default function ProbabilityBar({ yes, no }: ProbabilityBarProps) {
-  const yesPercent = Math.round(yes)
-  const noPercent = Math.round(no)
-  const total = yesPercent + noPercent
-  const yesWidth = total > 0 ? (yesPercent / total) * 100 : 0
-  const noWidth = total > 0 ? (noPercent / total) * 100 : 0
+function ProbabilityBar({ yes, no }: ProbabilityBarProps) {
+  const { yesPercent, noPercent, yesWidth, noWidth } = useMemo(() => {
+    const yesP = Math.round(yes)
+    const noP = Math.round(no)
+    const total = yesP + noP
+    return {
+      yesPercent: yesP,
+      noPercent: noP,
+      yesWidth: total > 0 ? (yesP / total) * 100 : 0,
+      noWidth: total > 0 ? (noP / total) * 100 : 0,
+    }
+  }, [yes, no])
 
   return (
     <div className="flex flex-col space-y-1">
@@ -29,3 +37,4 @@ export default function ProbabilityBar({ yes, no }: ProbabilityBarProps) {
   )
 }
 
+export default memo(ProbabilityBar)

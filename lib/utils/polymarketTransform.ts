@@ -21,6 +21,47 @@ function mapStatus(polymarketMarket: PolymarketMarket): Market['status'] {
   return 'active'
 }
 
+const sportsKeywordsSet = new Set([
+  'game',
+  'match',
+  'team',
+  'player',
+  'super bowl',
+  'world cup',
+  'championship',
+  'playoff',
+  'quarterback',
+  'touchdown',
+  'field goal',
+  'points scored',
+  'yards',
+  'nfl',
+  'nba',
+  'mlb',
+  'nhl',
+  'soccer',
+  'football',
+  'basketball',
+  'baseball',
+  'hockey',
+  'athlete',
+  'coach',
+  'stadium',
+  'halftime',
+  'overtime',
+  'mvp',
+  'all-star',
+  'draft',
+  'trade',
+  'roster',
+  'injury',
+  'season',
+  'playoffs',
+  'finals',
+  'semifinals',
+  'quarterfinals',
+])
+
 export function isSportsMarket(market: Market): boolean {
   const question = (market.question || '').toLowerCase()
   const category = (market.category || '').toLowerCase()
@@ -29,48 +70,13 @@ export function isSportsMarket(market: Market): boolean {
     return true
   }
   
-  const sportsKeywords = [
-    'game',
-    'match',
-    'team',
-    'player',
-    'super bowl',
-    'world cup',
-    'championship',
-    'playoff',
-    'quarterback',
-    'touchdown',
-    'field goal',
-    'points scored',
-    'yards',
-    'nfl',
-    'nba',
-    'mlb',
-    'nhl',
-    'soccer',
-    'football',
-    'basketball',
-    'baseball',
-    'hockey',
-    'athlete',
-    'coach',
-    'stadium',
-    'halftime',
-    'overtime',
-    'mvp',
-    'all-star',
-    'draft',
-    'trade',
-    'roster',
-    'injury',
-    'season',
-    'playoffs',
-    'finals',
-    'semifinals',
-    'quarterfinals',
-  ]
+  for (const keyword of sportsKeywordsSet) {
+    if (question.includes(keyword)) {
+      return true
+    }
+  }
   
-  return sportsKeywords.some(keyword => question.includes(keyword))
+  return false
 }
 
 export function filterSportsMarkets(markets: Market[]): Market[] {
@@ -189,53 +195,34 @@ export function transformPolymarketMarkets(polymarketMarkets: PolymarketMarket[]
     .map(transformPolymarketMarket)
 }
 
+const categoryKeywords: Record<string, Set<string>> = {
+  Politics: new Set(['election', 'president', 'senate', 'house', 'congress', 'governor', 'trump', 'biden', 'vote', 'primary', 'parliament', 'referendum', 'policy']),
+  Economics: new Set(['inflation', 'gdp', 'interest rate', 'fed', 'unemployment', 'revenue', 'tax', 'tariff', 'jobs report', 'cpi', 'economy', 'debt', 'deficit', 'treasury']),
+  Crypto: new Set(['crypto', 'bitcoin', 'btc', 'eth', 'ethereum', 'blockchain', 'token', 'defi', 'stablecoin', 'solana']),
+  Climate: new Set(['temperature', 'climate', 'carbon', 'co2', 'emissions', 'hottest', 'warming', 'rainfall', 'snow', 'hurricane', 'heat', 'weather']),
+  Technology: new Set(['ai', 'artificial intelligence', 'llm', 'model', 'openai', 'google', 'microsoft', 'chip', 'nvidia', 'semiconductor', 'space', 'satellite', 'rocket']),
+  Entertainment: new Set(['movie', 'film', 'box office', 'oscar', 'music', 'album', 'concert', 'game release', 'gta', 'entertainment', 'streaming']),
+  Legal: new Set(['lawsuit', 'court', 'supreme court', 'legal', 'trial', 'verdict']),
+  Health: new Set(['covid', 'vaccine', 'virus', 'health', 'hospital', 'medical', 'disease']),
+  Science: new Set(['nasa', 'space', 'astronaut', 'launch', 'mission', 'planet', 'mars']),
+  Business: new Set(['company', 'stock', 'revenue', 'earnings', 'ipo', 'merger', 'acquisition']),
+  Sports: new Set(['football', 'nba', 'nfl', 'mlb', 'nhl', 'soccer', 'tennis', 'golf', 'fifa', 'super bowl', 'world cup', 'playoff', 'touchdown', 'goal', 'basketball', 'baseball', 'hockey']),
+}
+
 function deriveCategoryFromQuestion(question: string): string {
   const q = (question || '').toLowerCase()
   
-  const matchesAny = (keywords: string[]) => keywords.some(k => q.includes(k))
-  
-  if (matchesAny(['election', 'president', 'senate', 'house', 'congress', 'governor', 'trump', 'biden', 'vote', 'primary', 'parliament', 'referendum', 'policy'])) {
-    return 'Politics'
+  const matchesAny = (keywords: Set<string>) => {
+    for (const keyword of keywords) {
+      if (q.includes(keyword)) return true
+    }
+    return false
   }
   
-  if (matchesAny(['inflation', 'gdp', 'interest rate', 'fed', 'unemployment', 'revenue', 'tax', 'tariff', 'jobs report', 'cpi', 'economy', 'debt', 'deficit', 'treasury'])) {
-    return 'Economics'
-  }
-  
-  if (matchesAny(['crypto', 'bitcoin', 'btc', 'eth', 'ethereum', 'blockchain', 'token', 'defi', 'stablecoin', 'solana'])) {
-    return 'Crypto'
-  }
-  
-  if (matchesAny(['temperature', 'climate', 'carbon', 'co2', 'emissions', 'hottest', 'warming', 'rainfall', 'snow', 'hurricane', 'heat', 'weather'])) {
-    return 'Climate'
-  }
-  
-  if (matchesAny(['ai', 'artificial intelligence', 'llm', 'model', 'openai', 'google', 'microsoft', 'chip', 'nvidia', 'semiconductor', 'space', 'satellite', 'rocket'])) {
-    return 'Technology'
-  }
-  
-  if (matchesAny(['movie', 'film', 'box office', 'oscar', 'music', 'album', 'concert', 'game release', 'gta', 'entertainment', 'streaming'])) {
-    return 'Entertainment'
-  }
-  
-  if (matchesAny(['lawsuit', 'court', 'supreme court', 'legal', 'trial', 'verdict'])) {
-    return 'Legal'
-  }
-  
-  if (matchesAny(['covid', 'vaccine', 'virus', 'health', 'hospital', 'medical', 'disease'])) {
-    return 'Health'
-  }
-  
-  if (matchesAny(['nasa', 'space', 'astronaut', 'launch', 'mission', 'planet', 'mars'])) {
-    return 'Science'
-  }
-  
-  if (matchesAny(['company', 'stock', 'revenue', 'earnings', 'ipo', 'merger', 'acquisition'])) {
-    return 'Business'
-  }
-  
-  if (matchesAny(['football', 'nba', 'nfl', 'mlb', 'nhl', 'soccer', 'tennis', 'golf', 'fifa', 'super bowl', 'world cup', 'playoff', 'touchdown', 'goal', 'basketball', 'baseball', 'hockey'])) {
-    return 'Sports'
+  for (const [category, keywords] of Object.entries(categoryKeywords)) {
+    if (matchesAny(keywords)) {
+      return category
+    }
   }
   
   return 'General'

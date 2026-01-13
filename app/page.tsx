@@ -42,17 +42,12 @@ export default function Home() {
   }
 
   useEffect(() => {
-    // Initial fetch
     fetchMarkets()
-    
-    // Set up auto-refresh
     const refreshInterval = parseInt(
       process.env.NEXT_PUBLIC_API_REFRESH_INTERVAL || '60000',
       10
     )
-    
     const interval = setInterval(fetchMarkets, refreshInterval)
-    
     return () => clearInterval(interval)
   }, [])
 

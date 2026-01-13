@@ -19,7 +19,6 @@ export default function MarketCard({ market }: MarketCardProps) {
 
   return (
     <div className="group relative rounded-lg border border-gray-200 dark:border-gray-700 bg-slate-100 dark:bg-[#1e293b] shadow-sm dark:shadow-none p-4 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500 dark:hover:border-[#60a5fa] hover:shadow-lg hover:shadow-blue-500/20 dark:hover:shadow-blue-500/10">
-      {/* Question - Alone at top */}
       <h3
         className="text-gray-900 dark:text-white font-semibold transition-colors duration-300"
         style={{
@@ -31,15 +30,12 @@ export default function MarketCard({ market }: MarketCardProps) {
         {market.question}
       </h3>
 
-      {/* Category - Reduced gap */}
       <div className="mb-3">
         <CategoryTag category={market.category} />
       </div>
 
-      {/* Date, Countdown and Status - Together */}
       <div className="mb-4 flex items-start justify-between gap-3">
         <div className="flex-1">
-          {/* Resolution Date */}
           <div
             className="text-gray-700 dark:text-gray-300 font-semibold transition-colors duration-300"
             style={{
@@ -50,7 +46,6 @@ export default function MarketCard({ market }: MarketCardProps) {
             {formatDate(market.endDate)}
           </div>
 
-          {/* Closing Time - Orange */}
           <div
             className="text-orange-500 font-medium transition-colors duration-300"
             style={{
@@ -62,8 +57,6 @@ export default function MarketCard({ market }: MarketCardProps) {
         </div>
         <StatusBadge status={market.status} />
       </div>
-
-      {/* Probability Display - Side by Side in Box */}
       <div
         className="bg-gray-100 dark:bg-[#0f172a] transition-colors duration-300"
         style={{
@@ -98,7 +91,6 @@ export default function MarketCard({ market }: MarketCardProps) {
         </div>
       </div>
 
-      {/* Financial Metrics - Grid Layout */}
       <div className="mb-4 grid grid-cols-2 gap-3">
         <div>
           <div
@@ -159,7 +151,6 @@ export default function MarketCard({ market }: MarketCardProps) {
         </div>
       </div>
 
-      {/* Resolution Source - Left Aligned */}
       <div
         className="border-t border-gray-200 dark:border-gray-700 transition-colors duration-300"
         style={{

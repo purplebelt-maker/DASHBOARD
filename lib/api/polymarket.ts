@@ -1,10 +1,3 @@
-/**
- * Polymarket API Client
- * Uses public Gamma API endpoints - no authentication required
- * Based on: https://docs.polymarket.com
- */
-
-// Polymarket API Types
 export interface PolymarketMarket {
   id: string
   question: string
@@ -23,8 +16,8 @@ export interface PolymarketMarket {
   volume1mo?: number
   volume1yr?: number
   lastTradePrice?: number
-  outcomePrices?: string // JSON string array
-  outcomes?: string // JSON string array
+  outcomePrices?: string
+  outcomes?: string
   bestAsk?: number
   bestBid?: number
   endDate?: string
@@ -77,7 +70,7 @@ export interface PolymarketMarket {
       createdAt?: string
       updatedAt?: string
     }>
-    [key: string]: any // Allow any additional fields
+    [key: string]: any
   }>
   series?: Array<{
     id?: string
@@ -93,9 +86,9 @@ export interface PolymarketMarket {
     commentCount?: number
     createdAt?: string
     updatedAt?: string
-    [key: string]: any // Allow any additional fields
+    [key: string]: any
   }>
-  [key: string]: any // Allow any additional fields from API
+  [key: string]: any
 }
 
 export interface PolymarketMarketsResponse {
@@ -107,10 +100,6 @@ export interface PolymarketMarketsResponse {
 
 const GAMMA_API_BASE_URL = 'https://gamma-api.polymarket.com'
 
-/**
- * Fetch markets from Polymarket Gamma API
- * Public endpoint - no authentication required
- */
 export async function fetchPolymarketMarkets(
   options?: {
     limit?: number
@@ -132,7 +121,6 @@ export async function fetchPolymarketMarkets(
     params.append('cursor', options.cursor)
   }
   
-  // Polymarket Gamma API uses 'active' parameter for open markets
   if (options?.status) {
     if (options.status === 'open') {
       params.append('active', 'true')
@@ -140,7 +128,6 @@ export async function fetchPolymarketMarkets(
       params.append('status', options.status)
     }
   } else {
-    // Default to active/open markets
     params.append('active', 'true')
   }
   
@@ -151,16 +138,13 @@ export async function fetchPolymarketMarkets(
   if (options?.sort) {
     params.append('sort', options.sort)
   } else {
-    // Default to sorting by volume
     params.append('sort', 'volume')
   }
 
-  // Force closed flag if provided
   if (options?.closed !== undefined) {
     params.append('closed', String(options.closed))
   }
 
-  // Optional include parameter (e.g., condition)
   if (options?.include) {
     params.append('include', options.include)
   }
@@ -172,7 +156,6 @@ export async function fetchPolymarketMarkets(
       headers: {
         'Content-Type': 'application/json',
       },
-      // Add cache control for fresh data
       cache: 'no-store',
     })
     
@@ -183,7 +166,6 @@ export async function fetchPolymarketMarkets(
     
     const data = await response.json()
     
-    // Handle different response formats
     if (Array.isArray(data)) {
       return { data, markets: data }
     }
@@ -205,75 +187,4 @@ export async function fetchPolymarketMarkets(
   }
 }
 
-/**
- * Fetch a specific market by ID
- */
-export async function fetchPolymarketMarket(marketId: string): Promise<PolymarketMarket> {
-  try {
-    const response = await fetch(`${GAMMA_API_BASE_URL}/markets/${marketId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      cache: 'no-store',
-    })
-    
-    if (!response.ok) {
-      throw new Error(`Polymarket API error: ${response.status}`)
-    }
-    
-    const data = await response.json()
-    return data.market || data
-  } catch (error) {
-    if (error instanceof Error) {
-      throw error
-    }
-    throw new Error(`Unknown error fetching Polymarket market: ${error}`)
-  }
-}
-
-/**
- * Fetch events from Polymarket
- */
-export async function fetchPolymarketEvents(options?: {
-  limit?: number
-  cursor?: string
-  category?: string
-}) {
-  const params = new URLSearchParams()
-  
-  if (options?.limit) {
-    params.append('limit', options.limit.toString())
-  }
-  
-  if (options?.cursor) {
-    params.append('cursor', options.cursor)
-  }
-  
-  if (options?.category) {
-    params.append('category', options.category)
-  }
-  
-  try {
-    const response = await fetch(`${GAMMA_API_BASE_URL}/events?${params.toString()}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      cache: 'no-store',
-    })
-    
-    if (!response.ok) {
-      throw new Error(`Polymarket API error: ${response.status}`)
-    }
-    
-    const data = await response.json()
-    return data
-  } catch (error) {
-    if (error instanceof Error) {
-      throw error
-    }
-    throw new Error(`Unknown error fetching Polymarket events: ${error}`)
-  }
-}
 

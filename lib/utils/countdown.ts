@@ -1,5 +1,3 @@
-// Utility function to calculate countdown from end date
-
 export interface Countdown {
   days: number
   hours: number

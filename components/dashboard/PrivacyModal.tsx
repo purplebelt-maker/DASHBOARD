@@ -6,14 +6,11 @@ export default function PrivacyModal() {
   const [isOpen, setIsOpen] = useState(false)
 
   useEffect(() => {
-    // Check if user has already accepted the privacy policy
     const hasAccepted = localStorage.getItem('privacyPolicyAccepted')
     if (!hasAccepted) {
       setIsOpen(true)
     }
   }, [])
-
-  
 
   const handleAccept = () => {
     localStorage.setItem('privacyPolicyAccepted', 'true')
@@ -30,7 +27,6 @@ export default function PrivacyModal() {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
       <div className="relative mx-4 w-full max-w-2xl rounded-lg bg-gray-800 shadow-2xl max-h-[90vh] flex flex-col">
-        {/* Close Button */}
         <button
           onClick={handleClose}
           className="absolute top-4 right-4 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-gray-700 hover:bg-gray-600 text-white transition-colors duration-200"
@@ -51,15 +47,12 @@ export default function PrivacyModal() {
           </svg>
         </button>
 
-        {/* Header */}
         <div className="border-b border-blue-500 px-6 py-4">
           <h2 className="text-2xl font-bold text-white">Privacy Policy & Disclaimer</h2>
         </div>
 
-        {/* Content - Scrollable */}
         <div className="flex-1 overflow-y-auto px-6 py-4">
           <div className="space-y-6 text-white">
-            {/* Privacy Policy Section */}
             <div>
               <h3 className="mb-3 text-lg font-bold text-blue-400">Privacy Policy</h3>
               <p className="mb-4 text-gray-300">
@@ -67,7 +60,6 @@ export default function PrivacyModal() {
               </p>
             </div>
 
-            {/* Information We Collect */}
             <div>
               <h3 className="mb-3 text-lg font-bold text-blue-400">Information We Collect</h3>
               <ul className="ml-6 list-disc space-y-2 text-gray-300">
@@ -77,7 +69,6 @@ export default function PrivacyModal() {
               </ul>
             </div>
 
-            {/* Data Usage */}
             <div>
               <h3 className="mb-3 text-lg font-bold text-blue-400">Data Usage</h3>
               <ul className="ml-6 list-disc space-y-2 text-gray-300">
@@ -87,7 +78,6 @@ export default function PrivacyModal() {
               </ul>
             </div>
 
-            {/* Disclaimer */}
             <div>
               <h3 className="mb-3 text-lg font-bold text-blue-400">Disclaimer</h3>
               
@@ -121,7 +111,6 @@ export default function PrivacyModal() {
           </div>
         </div>
 
-        {/* Footer with Accept Button */}
         <div className="border-t border-gray-700 px-6 py-4">
           <button
             onClick={handleAccept}

@@ -16,11 +16,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    // Check if this is the first visit (no theme preference saved)
     const savedTheme = localStorage.getItem('theme') as Theme | null
     
     if (savedTheme) {
-      // User has a saved preference, use it
       setTheme(savedTheme)
       if (savedTheme === 'dark') {
         document.documentElement.classList.add('dark')
@@ -28,7 +26,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         document.documentElement.classList.remove('dark')
       }
     } else {
-      // First visit - default to dark mode
       setTheme('dark')
       document.documentElement.classList.add('dark')
       localStorage.setItem('theme', 'dark')
@@ -39,8 +36,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (mounted) {
-      // Tailwind dark mode only uses 'dark' class
-      // When 'dark' is present = dark mode, when absent = light mode
       if (theme === 'dark') {
         document.documentElement.classList.add('dark')
       } else {
@@ -54,7 +49,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))
   }
 
-  // Always provide the context, even before mounting
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
       {children}

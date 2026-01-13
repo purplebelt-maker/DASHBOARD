@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Market } from '@/types'
 import { formatCurrency, formatDate, formatChange } from '@/lib/utils/format'
 import { calculateCountdown, formatCountdown } from '@/lib/utils/countdown'
@@ -12,11 +12,15 @@ interface MarketsTableProps {
   markets: Market[]
 }
 
+type SortField = 'liquidity' | 'volume24h' | 'volumeTotal'
+type SortDirection = 'asc' | 'desc'
+
 export default function MarketsTable({ markets }: MarketsTableProps) {
   const [countdowns, setCountdowns] = useState<Record<string, string>>({})
+  const [sortField, setSortField] = useState<SortField>('volume24h')
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc')
 
   useEffect(() => {
-    // Update countdowns every minute
     const updateCountdowns = () => {
       const newCountdowns: Record<string, string> = {}
       markets.forEach((market) => {
@@ -27,11 +31,93 @@ export default function MarketsTable({ markets }: MarketsTableProps) {
     }
 
     updateCountdowns()
-    const interval = setInterval(updateCountdowns, 60000) // Update every minute
+    const interval = setInterval(updateCountdowns, 60000)
 
     return () => clearInterval(interval)
   }, [markets])
 
+  const sortedMarkets = useMemo(() => {
+    return [...markets].sort((a, b) => {
+      let aValue: number
+      let bValue: number
+
+      switch (sortField) {
+        case 'liquidity':
+          aValue = a.liquidity
+          bValue = b.liquidity
+          break
+        case 'volume24h':
+          aValue = a.volume24h
+          bValue = b.volume24h
+          break
+        case 'volumeTotal':
+          aValue = a.volumeTotal
+          bValue = b.volumeTotal
+          break
+        default:
+          return 0
+      }
+
+      if (sortDirection === 'asc') {
+        return aValue - bValue
+      } else {
+        return bValue - aValue
+      }
+    })
+  }, [markets, sortField, sortDirection])
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
+    } else {
+      setSortField(field)
+      setSortDirection('desc')
+    }
+  }
+
+  const SortableHeader = ({ 
+    field, 
+    children 
+  }: { 
+    field: SortField
+    children: React.ReactNode 
+  }) => {
+    const isActive = sortField === field
+    const isAsc = isActive && sortDirection === 'asc'
+    const isDesc = isActive && sortDirection === 'desc'
+
+    return (
+      <th
+        scope="col"
+        onClick={() => handleSort(field)}
+        className="px-2 py-3 text-right text-sm font-bold uppercase tracking-wider text-gray-700 dark:text-gray-400 sm:px-3 lg:px-3 transition-colors duration-300 cursor-pointer hover:bg-slate-300 dark:hover:bg-[#475569] select-none"
+      >
+        <div className="flex items-center justify-end gap-1">
+          <span>{children}</span>
+          <div className="flex flex-col">
+            <svg
+              className={`w-3 h-3 transition-opacity ${
+                isAsc ? 'opacity-100 text-blue-600 dark:text-blue-400' : 'opacity-30'
+              }`}
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path d="M5 12l5-5 5 5H5z" />
+            </svg>
+            <svg
+              className={`w-3 h-3 transition-opacity -mt-1 ${
+                isDesc ? 'opacity-100 text-blue-600 dark:text-blue-400' : 'opacity-30'
+              }`}
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path d="M5 8l5 5 5-5H5z" />
+            </svg>
+          </div>
+        </div>
+      </th>
+    )
+  }
 
   return (
     <div className="w-full overflow-x-auto lg:overflow-x-visible">
@@ -64,24 +150,15 @@ export default function MarketsTable({ markets }: MarketsTableProps) {
                 >
                   24h Change
                 </th>
-                <th
-                  scope="col"
-                  className="px-2 py-3 text-right text-sm font-bold uppercase tracking-wider text-gray-700 dark:text-gray-400 sm:px-3 lg:px-3 transition-colors duration-300"
-                >
+                <SortableHeader field="liquidity">
                   Liquidity
-                </th>
-                <th
-                  scope="col"
-                  className="px-2 py-3 text-right text-sm font-bold uppercase tracking-wider text-gray-700 dark:text-gray-400 sm:px-3 lg:px-3 transition-colors duration-300"
-                >
+                </SortableHeader>
+                <SortableHeader field="volume24h">
                   Volume (24h)
-                </th>
-                <th
-                  scope="col"
-                  className="px-2 py-3 text-right text-sm font-bold uppercase tracking-wider text-gray-700 dark:text-gray-400 sm:px-3 lg:px-3 transition-colors duration-300"
-                >
+                </SortableHeader>
+                <SortableHeader field="volumeTotal">
                   Volume (Total)
-                </th>
+                </SortableHeader>
                 <th
                   scope="col"
                   className="px-2 py-3 text-left text-sm font-bold uppercase tracking-wider text-gray-700 dark:text-gray-400 sm:px-3 lg:px-3 transition-colors duration-300"
@@ -97,7 +174,7 @@ export default function MarketsTable({ markets }: MarketsTableProps) {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-700 bg-slate-100 dark:bg-[#1e293b] transition-colors duration-300">
-              {markets.map((market) => (
+              {sortedMarkets.map((market) => (
                 <tr
                   key={market.id}
                   className="transition-colors hover:bg-slate-200 dark:hover:bg-[#334155] duration-300 cursor-pointer"
@@ -149,7 +226,6 @@ export default function MarketsTable({ markets }: MarketsTableProps) {
                   </td>
                 </tr>
               ))}
-              {/* More markets row */}
               <tr className="transition-colors hover:bg-slate-200 dark:hover:bg-[#334155] duration-300">
                 <td
                   colSpan={10}

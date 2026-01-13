@@ -2,7 +2,6 @@ interface CategoryTagProps {
   category: string
 }
 
-// Color mapping for categories - dim, great colors that look good on the dashboard
 const categoryColors: Record<string, { bg: string; text: string; darkBg: string; darkText: string }> = {
   General: {
     bg: 'bg-gray-200',
@@ -73,7 +72,6 @@ const categoryColors: Record<string, { bg: string; text: string; darkBg: string;
 }
 
 export default function CategoryTag({ category }: CategoryTagProps) {
-  // Get colors for this category, default to General if not found
   const colors = categoryColors[category] || categoryColors.General
   
   return (

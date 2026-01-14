@@ -12,7 +12,7 @@ const statusConfig: Record<
   active: {
     label: 'Open',
     style: {
-      background: '#10b981',
+      background: '#2563eb',
       color: '#fff',
     },
   },

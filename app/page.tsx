@@ -120,6 +120,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0f172a] transition-colors duration-300">
+      
       <PrivacyModal />
       <ThemeToggle />
       <RefreshNotification
@@ -127,6 +128,7 @@ export default function Home() {
         onComplete={() => setShowRefreshNotification(false)}
       />
       <Header />
+      
 
       <ControlBar
         view={view}
@@ -134,13 +136,14 @@ export default function Home() {
         lastRefreshTime={lastRefreshTime}
       />
 
-      <div className="container mx-auto px-4 pt-4">
+       <div className="container mx-auto px-4 pt-4">
         <CountdownTimer
           key={countdownKey}
           totalSeconds={120}
           onComplete={() => {}}
         />
       </div>
+     
 
       <div className=" container mx-auto flex items-center gap-4 rounded-lg bg-white dark:bg-slate-900 p-4 shadow-sm">
         <span className="text-sm font-medium text-gray-700 dark:text-gray-300">

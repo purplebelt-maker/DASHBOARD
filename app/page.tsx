@@ -1,82 +1,126 @@
-'use client'
+"use client";
 
-import { useState, useEffect, useCallback } from 'react'
-import Header from '@/components/dashboard/Header'
-import ControlBar from '@/components/dashboard/ControlBar'
-import MarketsTable from '@/components/dashboard/MarketsTable'
-import MarketsGrid from '@/components/dashboard/MarketsGrid'
-import Footer from '@/components/dashboard/Footer'
-import ThemeToggle from '@/components/dashboard/ThemeToggle'
-import PrivacyModal from '@/components/dashboard/PrivacyModal'
-import RefreshNotification from '@/components/dashboard/RefreshNotification'
-import SkeletonLoader from '@/components/ui/SkeletonLoader'
-import { Market } from '@/types'
+import { useState, useEffect, useCallback } from "react";
+import Header from "@/components/dashboard/Header";
+import ControlBar from "@/components/dashboard/ControlBar";
+import MarketsTable from "@/components/dashboard/MarketsTable";
+import MarketsGrid from "@/components/dashboard/MarketsGrid";
+import Footer from "@/components/dashboard/Footer";
+import ThemeToggle from "@/components/dashboard/ThemeToggle";
+import PrivacyModal from "@/components/dashboard/PrivacyModal";
+import RefreshNotification from "@/components/dashboard/RefreshNotification";
+import SkeletonLoader from "@/components/ui/SkeletonLoader";
+import { Market } from "@/types";
+import axios from "axios";
+import { GAMMA_API_BASE_URL } from "@/lib/api/polymarket";
+import CountdownTimer from "@/components/CountdownTimer";
 
+const REFRESH_INTERVAL_MS = 120000; // Changed from 20000 to 120000 (2 minutes)
 
-
-const REFRESH_INTERVAL_MS = 240000
-
+export type SortOrder = "asc" | "desc";
 
 export default function Home() {
-  const [view, setView] = useState<'table' | 'grid'>('table')
-  const [markets, setMarkets] = useState<Market[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [lastRefreshTime, setLastRefreshTime] = useState<Date>(new Date())
-  const [showRefreshNotification, setShowRefreshNotification] = useState(false)
+  const [view, setView] = useState<"table" | "grid">("table");
+  const [markets, setMarkets] = useState<Market[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [lastRefreshTime, setLastRefreshTime] = useState<Date>(new Date());
+  const [showRefreshNotification, setShowRefreshNotification] = useState(false);
 
-  const fetchMarkets = useCallback(async (isRefresh = false) => {
-    try {
-      if (!isRefresh) {
-        setLoading(true)
+  const [testMarkets, setTestMarkets] = useState<Market[]>([]);
+  const [volumeSortOrder, setVolumeSortOrder] = useState<SortOrder>("desc");
+  const [countdownKey, setCountdownKey] = useState(0);
+
+  const fetchMarkets = useCallback(
+    async (isRefresh = false) => {
+      try {
+        if (!isRefresh) {
+          setLoading(true);
+        }
+        setError(null);
+
+        const cacheBuster = isRefresh
+          ? `?_t=${Date.now()}`
+          : `?_t=${Date.now()}`;
+        const params = new URLSearchParams({
+          order: volumeSortOrder,
+          _t: Date.now().toString(),
+        });
+
+        const response = await fetch(`/api/markets?${params.toString()}`, {
+          cache: "no-store",
+          headers: {
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            Pragma: "no-cache",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch markets: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+
+        if (data.error) {
+          throw new Error(data.message || data.error);
+        }
+
+        console.log("markets data is ", markets);
+
+        setMarkets(data.markets || []);
+        setLastRefreshTime(new Date());
+        setCountdownKey((prev) => prev + 1); // Reset countdown
+
+        if (isRefresh) {
+          setShowRefreshNotification(true);
+        }
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Failed to fetch markets"
+        );
+        if (!isRefresh) {
+          setLoading(false);
+        }
+      } finally {
+        if (!isRefresh) {
+          setLoading(false);
+        }
       }
-      setError(null)
-      
-      const cacheBuster = isRefresh ? `?_t=${Date.now()}` : `?_t=${Date.now()}`
-      const response = await fetch(`/api/markets${cacheBuster}`, {
-        cache: 'no-store',
-        headers: {
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache',
-        },
-      })
-      
-      if (!response.ok) {
-        throw new Error(`Failed to fetch markets: ${response.statusText}`)
-      }
-      
-      const data = await response.json()
-      
-      if (data.error) {
-        throw new Error(data.message || data.error)
-      }
-      
-      setMarkets(data.markets || [])
-      setLastRefreshTime(new Date())
-      
-      if (isRefresh) {
-        setShowRefreshNotification(true)
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch markets')
-      if (!isRefresh) {
-        setLoading(false)
-      }
-    } finally {
-      if (!isRefresh) {
-        setLoading(false)
-      }
-    }
-  }, [])
+    },
+    [volumeSortOrder]
+  );
 
   useEffect(() => {
-    fetchMarkets(false)
-    const interval = setInterval(() => fetchMarkets(true), REFRESH_INTERVAL_MS)
-    return () => clearInterval(interval)
-  }, [fetchMarkets])
+    fetchMarkets(false);
+    const interval = setInterval(() => fetchMarkets(true), REFRESH_INTERVAL_MS);
+    return () => clearInterval(interval);
+  }, [fetchMarkets]);
+
+  // useEffect(() => {
+  //   const fetchMarkets = async () => {
+  //     try {
+  //       const params = new URLSearchParams({
+  //         order: "volume24hr",
+  //         ascending: "false",
+  //         limit: "20",
+  //         offset: "0",
+  //       });
+  //       console.log("before doing the api call")
+  //       const response = await axios.get(`/api/sort?${params.toString()}`);
+
+  //       console.log("response from test is ", response.data);
+  //     } catch (err) {
+  //       console.error("Error fetching markets:", err);
+  //     } finally {
+  //     }
+  //   };
+
+  //   fetchMarkets();
+  // }, []); // Empty dependency array means this runs once on mount
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0f172a] transition-colors duration-300">
+      
       <PrivacyModal />
       <ThemeToggle />
       <RefreshNotification
@@ -84,7 +128,38 @@ export default function Home() {
         onComplete={() => setShowRefreshNotification(false)}
       />
       <Header />
-      <ControlBar view={view} onViewChange={setView} lastRefreshTime={lastRefreshTime} />
+      
+
+      <ControlBar
+        view={view}
+        onViewChange={setView}
+        lastRefreshTime={lastRefreshTime}
+      />
+
+       <div className="container mx-auto px-4 pt-4">
+        <CountdownTimer
+          key={countdownKey}
+          totalSeconds={120}
+          onComplete={() => {}}
+        />
+      </div>
+     
+
+      <div className=" container mx-auto flex items-center gap-4 rounded-lg bg-white dark:bg-slate-900 p-4 shadow-sm">
+        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          Sort by:
+        </span>
+
+        <select
+          value={volumeSortOrder}
+          onChange={(e) => setVolumeSortOrder(e.target.value as SortOrder)}
+          className="rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="desc">Volume (24h) — High to Low</option>
+          <option value="asc">Volume (24h) — Low to High</option>
+        </select>
+      </div>
+
       <main className="container mx-auto px-4 pb-4 pt-8 sm:px-6 lg:px-8">
         {loading && markets.length === 0 ? (
           <div className="space-y-4">
@@ -92,7 +167,9 @@ export default function Home() {
             <div className="flex items-center justify-center py-4">
               <div className="text-center">
                 <div className="inline-block h-6 w-6 animate-spin rounded-full border-3 border-solid border-blue-600 border-r-transparent"></div>
-                <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">Loading markets...</p>
+                <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                  Loading markets...
+                </p>
               </div>
             </div>
           </div>
@@ -118,7 +195,9 @@ export default function Home() {
               <h3 className="mt-4 text-lg font-semibold text-gray-900 dark:text-white">
                 Failed to load markets
               </h3>
-              <p className="mt-2 text-sm text-red-600 dark:text-red-400">{error}</p>
+              <p className="mt-2 text-sm text-red-600 dark:text-red-400">
+                {error}
+              </p>
               <button
                 onClick={() => fetchMarkets(false)}
                 className="mt-6 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
@@ -154,12 +233,12 @@ export default function Home() {
           </div>
         ) : (
           <>
-            {view === 'table' && <MarketsTable markets={markets} />}
-            {view === 'grid' && <MarketsGrid markets={markets} />}
+            {view === "table" && <MarketsTable markets={markets} />}
+            {view === "grid" && <MarketsGrid markets={markets} />}
           </>
         )}
       </main>
       <Footer />
     </div>
-  )
+  );
 }

@@ -32,7 +32,7 @@ function Header() {
                 Live Probabilities — High-Volume Polymarket Markets
               </p>
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-500 transition-colors duration-300">
-                Updated every 4 minutes
+                Updated every 2 minutes
               </p>
             </div>
           </div>

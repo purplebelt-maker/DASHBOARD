@@ -11,8 +11,6 @@ import PrivacyModal from "@/components/dashboard/PrivacyModal";
 import RefreshNotification from "@/components/dashboard/RefreshNotification";
 import SkeletonLoader from "@/components/ui/SkeletonLoader";
 import { Market } from "@/types";
-import axios from "axios";
-import { GAMMA_API_BASE_URL } from "@/lib/api/polymarket";
 import CountdownTimer from "@/components/CountdownTimer";
 
 const REFRESH_INTERVAL_MS = 120000; // Changed from 20000 to 120000 (2 minutes)
@@ -27,7 +25,6 @@ export default function Home() {
   const [lastRefreshTime, setLastRefreshTime] = useState<Date>(new Date());
   const [showRefreshNotification, setShowRefreshNotification] = useState(false);
 
-  const [testMarkets, setTestMarkets] = useState<Market[]>([]);
   const [volumeSortOrder, setVolumeSortOrder] = useState<SortOrder>("desc");
   const [countdownKey, setCountdownKey] = useState(0);
 

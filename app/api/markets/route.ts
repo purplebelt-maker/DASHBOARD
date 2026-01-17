@@ -249,7 +249,7 @@ export async function GET(request: NextRequest) {
 
     // Return top 25 trending markets (matching Polymarket's default display)
     // These are already sorted by 24hr volume (descending) from API - highest volume first
-    const limitedMarkets = sortedMarkets.slice(0, 100);
+    const limitedMarkets = sortedMarkets.slice(0, limit);
 
     const response = NextResponse.json({
       markets: limitedMarkets,

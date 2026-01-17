@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
@@ -16,6 +17,7 @@ import { getEvents } from "@/redux/actions/eventsAction";
 import EventsTable from "@/components/EventsTable";
 import { useSelector } from "react-redux";
 import { eventsSelector } from "@/redux/reducers";
+import { EndingIn, EventCategory, SortBy } from "@/types/events/filters";
 
 const REFRESH_INTERVAL_MS = 120000; // Changed from 20000 to 120000 (2 minutes)
 
@@ -102,9 +104,38 @@ export default function Home() {
   const { data: eventData, loading: eventLoading } =
     useSelector(eventsSelector);
 
+  // filters
+  // EVENTS pagination
+  const [eventPage, setEventPage] = useState(1);
+
+  const [eventLimit, setEventLimit] = useState(20);
+
+  // EVENTS filters (match backend)
+  const [eventFilters, setEventFilters] = useState<{
+    sortBy?: SortBy;
+    sortOrder?: SortOrder;
+    categoryId?: EventCategory[];
+    endingIn?: EndingIn;
+  }>({
+    sortBy: "volume24hr",
+    sortOrder: "desc",
+  });
+
+  const [filtersLoading, setFiltersLoading] = useState(false);
+
   useEffect(() => {
-    dispatch(getEvents());
-  }, []);
+    (async () => {
+      setFiltersLoading(true);
+      await dispatch(
+        getEvents({
+          page: eventPage,
+          limit: eventLimit,
+          ...eventFilters,
+        }),
+      );
+      setFiltersLoading(false);
+    })();
+  }, [eventPage, eventFilters, eventLimit]);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0f172a] transition-colors duration-300">
@@ -122,31 +153,278 @@ export default function Home() {
         lastRefreshTime={lastRefreshTime}
       />
 
-      <div className="container mx-auto px-4 pt-4">
+      {/* <div className="container mx-auto px-4 pt-4">
         <CountdownTimer
           key={countdownKey}
           totalSeconds={120}
           onComplete={() => {}}
         />
-      </div>
+      </div> */}
 
-      <div className=" container mx-auto flex items-center gap-4 rounded-lg bg-white dark:bg-slate-900 p-4 shadow-sm">
-        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-          Sort by:
-        </span>
+      {/* EVENTS FILTER BAR - IMPROVED DESIGN */}
+      <div className="container mx-auto mt-6">
+        <div className="rounded-2xl border border-gray-200/80 dark:border-slate-700/70 bg-gradient-to-br from-white/50 to-gray-50/30 dark:from-slate-900/40 dark:to-slate-800/30 backdrop-blur-sm p-6 shadow-lg shadow-gray-100/50 dark:shadow-slate-900/20">
+          {/* Section Header */}
+          <div className="mb-6 flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                Events Filter
+              </h2>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                Refine and sort event predictions
+              </p>
+            </div>
+          </div>
 
-        <select
-          value={volumeSortOrder}
-          onChange={(e) => setVolumeSortOrder(e.target.value as SortOrder)}
-          className="rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="desc">Volume (24h) — High to Low</option>
-          <option value="asc">Volume (24h) — Low to High</option>
-        </select>
+          {/* Main Filters Row */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-6">
+            {/* Sort By */}
+            <div className="lg:col-span-3">
+              <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wider">
+                Sort by
+              </label>
+              <div className="relative">
+                <select
+                  value={eventFilters.sortBy}
+                  onChange={(e) =>
+                    setEventFilters((prev) => ({
+                      ...prev,
+                      sortBy: e.target.value as SortBy,
+                    }))
+                  }
+                  className="w-full appearance-none rounded-xl border border-gray-300/80 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-sm font-medium text-gray-900 dark:text-white shadow-sm hover:border-gray-400 dark:hover:border-slate-500 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 transition-all duration-200 cursor-pointer"
+                >
+                  <option value="volume24hr">Volume (24h)</option>
+                  <option value="volumeTotal">Volume (Total)</option>
+                  <option value="liquidity">Liquidity</option>
+                  <option value="volume1wk">Volume (1 week)</option>
+                  <option value="volume1mo">Volume (1 month)</option>
+                  <option value="volume1yr">Volume (1 year)</option>
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                  <svg
+                    className="h-4 w-4 text-gray-500 dark:text-gray-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            {/* Ending In */}
+            <div className="lg:col-span-3">
+              <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wider">
+                Ending in
+              </label>
+              <div className="relative">
+                <select
+                  value={eventFilters.endingIn || ""}
+                  onChange={(e) =>
+                    setEventFilters((prev) => ({
+                      ...prev,
+                      endingIn: e.target.value
+                        ? (e.target.value as EndingIn)
+                        : undefined,
+                    }))
+                  }
+                  className="w-full appearance-none rounded-xl border border-gray-300/80 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-sm font-medium text-gray-900 dark:text-white shadow-sm hover:border-gray-400 dark:hover:border-slate-500 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 transition-all duration-200 cursor-pointer"
+                >
+                  <option value="">Any time</option>
+                  <option value="7d">7 days</option>
+                  <option value="14d">14 days</option>
+                  <option value="1mo">1 month</option>
+                  <option value="3mo">3 months</option>
+                  <option value="6mo">6 months</option>
+                  <option value="1yr">1 year</option>
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                  <svg
+                    className="h-4 w-4 text-gray-500 dark:text-gray-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            {/* Rows per page */}
+            <div className="lg:col-span-2">
+              <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wider">
+                Rows per page
+              </label>
+              <div className="relative">
+                <select
+                  value={eventLimit}
+                  onChange={(e) => setEventLimit(Number(e.target.value))}
+                  className="w-full appearance-none rounded-xl border border-gray-300/80 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-sm font-medium text-gray-900 dark:text-white shadow-sm hover:border-gray-400 dark:hover:border-slate-500 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 transition-all duration-200 cursor-pointer"
+                >
+                  <option value={10}>10</option>
+                  <option value={20}>20</option>
+                  <option value={50}>50</option>
+                  <option value={100}>100</option>
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                  <svg
+                    className="h-4 w-4 text-gray-500 dark:text-gray-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 6h16M4 12h16m-7 6h7"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            {/* Reset Filters */}
+            <div className="lg:col-span-2 flex items-end">
+              <button
+                onClick={() => {
+                  setEventFilters({
+                    sortBy: "volume24hr",
+                    sortOrder: "desc",
+                  });
+                  setEventLimit(20);
+                  setEventPage(1);
+                }}
+                className="w-full rounded-xl border border-gray-300/80 dark:border-slate-600 bg-gradient-to-r from-gray-50 to-white dark:from-slate-800 dark:to-slate-900 px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 hover:border-gray-400 dark:hover:border-slate-500 transition-all duration-200 shadow-sm"
+              >
+                <div className="flex items-center justify-center gap-2">
+                  <svg
+                    className="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                    />
+                  </svg>
+                  Reset All
+                </div>
+              </button>
+            </div>
+          </div>
+
+          {/* CATEGORY CHIPS - IMPROVED */}
+          <div>
+            <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-3 uppercase tracking-wider">
+              Categories
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {Object.entries(EventCategory).map(([label, value]) =>
+                typeof value === "number" ? (
+                  <button
+                    key={value}
+                    onClick={() =>
+                      setEventFilters((prev) => {
+                        const current = prev.categoryId || [];
+                        const exists = current.includes(value);
+
+                        return {
+                          ...prev,
+                          categoryId: exists
+                            ? current.filter((id) => id !== value)
+                            : [...current, value],
+                        };
+                      })
+                    }
+                    className={`group relative overflow-hidden rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 ${
+                      eventFilters.categoryId?.includes(value)
+                        ? "bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg shadow-blue-500/25 dark:shadow-blue-600/25"
+                        : "bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700 hover:shadow-md"
+                    }`}
+                  >
+                    {eventFilters.categoryId?.includes(value) && (
+                      <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:animate-shimmer" />
+                    )}
+                    {label}
+                    {eventFilters.categoryId?.includes(value) && (
+                      <span className="ml-1.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-white/20">
+                        <svg
+                          className="h-3 w-3"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
+                      </span>
+                    )}
+                  </button>
+                ) : null,
+              )}
+            </div>
+          </div>
+
+          {/* Active Filters Badge */}
+          {(eventFilters.categoryId?.length || 0) > 0 && (
+            <div className="mt-4 flex items-center justify-between rounded-lg bg-blue-50/50 dark:bg-blue-900/10 px-4 py-2">
+              <div className="flex items-center gap-2">
+                <svg
+                  className="h-4 w-4 text-blue-600 dark:text-blue-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+                  />
+                </svg>
+                <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
+                  {eventFilters.categoryId?.length || 0} categories selected
+                </span>
+              </div>
+              <button
+                onClick={() =>
+                  setEventFilters((prev) => ({
+                    ...prev,
+                    categoryId: [],
+                  }))
+                }
+                className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
+              >
+                Clear categories
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       <main className="container mx-auto px-4 pb-4 pt-8 sm:px-6 lg:px-8">
-        {loading && markets.length === 0 ? (
+        {eventLoading || filtersLoading ? (
           <div className="space-y-4">
             <SkeletonLoader />
             <div className="flex items-center justify-center py-4">
@@ -220,7 +498,15 @@ export default function Home() {
           <>
             {/* {view === "table" && <MarketsTable markets={markets} />} */}
             {view === "table" && (
-              <EventsTable data={eventData?.results || []} loading={eventLoading} />
+              <EventsTable
+                data={eventData?.results || []}
+                loading={eventLoading}
+                page={eventData?.page || eventPage}
+                totalPages={eventData?.totalPages || 1}
+                total={eventData?.total || 0}
+                limit={eventData?.limit || eventLimit}
+                onPageChange={setEventPage}
+              />
             )}
 
             {view === "grid" && <MarketsGrid markets={markets} />}

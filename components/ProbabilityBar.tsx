@@ -1,4 +1,3 @@
-// components/ProbabilityBar.tsx
 "use client";
 
 interface ProbabilityBarProps {
@@ -11,8 +10,11 @@ export default function ProbabilityBar({ yes, no }: ProbabilityBarProps) {
     return <span className="text-gray-500">—</span>;
   }
 
-  const yesPct = Math.round(yes * 100);
-  const noPct = Math.round(no * 100);
+  // Clamp to prevent weird API values
+  const safeYes = Math.min(Math.max(yes, 0), 1);
+
+  const yesPct = Math.round(safeYes * 100);
+  const noPct = 100 - yesPct; // 👈 GUARANTEED total = 100
 
   return (
     <div className="w-full">

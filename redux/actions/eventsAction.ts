@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { setEventsFailure, setEventsSuccess } from "../reducers/eventReducer";
+import { EventsQueryParams } from "@/types/events/filters";
 
 export const backendUrl = "http://localhost:6900";
 
@@ -8,17 +9,33 @@ export const BackendInstance = axios.create({
   baseURL: `${backendUrl}/api/`,
   withCredentials: true,
 });
+
 export const getEvents = createAsyncThunk(
-  "activityLogs/get",
-  async (data, { dispatch }) => {
+  "events/get",
+  async (params: EventsQueryParams, { dispatch }) => {
     try {
-      const res = await BackendInstance.get(`events`);
+      const query = new URLSearchParams();
+
+      if (params.page) query.append("page", params.page.toString());
+      if (params.limit) query.append("limit", params.limit.toString());
+
+      if (params.categoryId?.length) {
+        params.categoryId.forEach((id) =>
+          query.append("categoryId", id.toString()),
+        );
+      }
+
+      if (params.sortBy) query.append("sortBy", params.sortBy);
+      if (params.sortOrder) query.append("sortOrder", params.sortOrder);
+      if (params.endingIn) query.append("endingIn", params.endingIn);
+
+      const res = await BackendInstance.get(`events?${query.toString()}`);
+
       dispatch(setEventsSuccess(res.data.data));
       return true;
     } catch (err) {
       dispatch(setEventsFailure());
-
-      return false;
+      throw false;
     }
   },
 );

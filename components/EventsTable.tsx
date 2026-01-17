@@ -42,6 +42,7 @@ export default function EventsTable({
   limit,
   onPageChange,
 }: EventsTableProps) {
+  console.log("EVENT DATA LOOKS LIKE THIS", data);
   const columns: ColumnDef<IEvent>[] = [
     {
       accessorKey: "title",

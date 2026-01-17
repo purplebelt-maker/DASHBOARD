@@ -18,6 +18,7 @@ import EventsTable from "@/components/EventsTable";
 import { useSelector } from "react-redux";
 import { eventsSelector } from "@/redux/reducers";
 import { EndingIn, EventCategory, SortBy } from "@/types/events/filters";
+import { eventToMarket } from "@/lib/mappers/eventToMarket";
 
 const REFRESH_INTERVAL_MS = 120000; // Changed from 20000 to 120000 (2 minutes)
 
@@ -509,7 +510,16 @@ export default function Home() {
               />
             )}
 
-            {view === "grid" && <MarketsGrid markets={markets} />}
+            {/* 
+          HERE I'M CONVERTING EVENTS DATA TO MARKET BECAUSE THE PREVIOUS DEVELOPER CREATED THE UI WITH MARKETS DATA
+          NOW WE'RE USING THE EVENTS API, AND IT'S RESPONSE IS A LITTLE DIFFERNT THAN THE MARKETS API,
+          THAT'S WHY INSTEAD OF CHANGE ALL THE UI , I DECIDED TO JUST MAP THE TYPES
+*/}
+            {view === "grid" && (
+              <MarketsGrid
+                markets={(eventData?.results || []).map(eventToMarket)}
+              />
+            )}
           </>
         )}
       </main>

@@ -12,6 +12,8 @@ import RefreshNotification from "@/components/dashboard/RefreshNotification";
 import SkeletonLoader from "@/components/ui/SkeletonLoader";
 import { Market } from "@/types";
 import CountdownTimer from "@/components/CountdownTimer";
+import { useAppDispatch } from "@/redux/store";
+import { getEvents } from "@/redux/actions/eventsAction";
 
 const REFRESH_INTERVAL_MS = 120000; // Changed from 20000 to 120000 (2 minutes)
 
@@ -73,7 +75,7 @@ export default function Home() {
         }
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : "Failed to fetch markets"
+          err instanceof Error ? err.message : "Failed to fetch markets",
         );
         if (!isRefresh) {
           setLoading(false);
@@ -84,7 +86,7 @@ export default function Home() {
         }
       }
     },
-    [volumeSortOrder]
+    [volumeSortOrder],
   );
 
   useEffect(() => {
@@ -93,31 +95,14 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [fetchMarkets]);
 
-  // useEffect(() => {
-  //   const fetchMarkets = async () => {
-  //     try {
-  //       const params = new URLSearchParams({
-  //         order: "volume24hr",
-  //         ascending: "false",
-  //         limit: "20",
-  //         offset: "0",
-  //       });
-  //       console.log("before doing the api call")
-  //       const response = await axios.get(`/api/sort?${params.toString()}`);
+  const dispatch = useAppDispatch();
 
-  //       console.log("response from test is ", response.data);
-  //     } catch (err) {
-  //       console.error("Error fetching markets:", err);
-  //     } finally {
-  //     }
-  //   };
-
-  //   fetchMarkets();
-  // }, []); // Empty dependency array means this runs once on mount
+  useEffect(() => {
+    dispatch(getEvents());
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0f172a] transition-colors duration-300">
-      
       <PrivacyModal />
       <ThemeToggle />
       <RefreshNotification
@@ -125,7 +110,6 @@ export default function Home() {
         onComplete={() => setShowRefreshNotification(false)}
       />
       <Header />
-      
 
       <ControlBar
         view={view}
@@ -133,14 +117,13 @@ export default function Home() {
         lastRefreshTime={lastRefreshTime}
       />
 
-       <div className="container mx-auto px-4 pt-4">
+      <div className="container mx-auto px-4 pt-4">
         <CountdownTimer
           key={countdownKey}
           totalSeconds={120}
           onComplete={() => {}}
         />
       </div>
-     
 
       <div className=" container mx-auto flex items-center gap-4 rounded-lg bg-white dark:bg-slate-900 p-4 shadow-sm">
         <span className="text-sm font-medium text-gray-700 dark:text-gray-300">

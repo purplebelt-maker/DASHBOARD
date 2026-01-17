@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from "react";
 import Header from "@/components/dashboard/Header";
 import ControlBar from "@/components/dashboard/ControlBar";
-import MarketsTable from "@/components/dashboard/MarketsTable";
 import MarketsGrid from "@/components/dashboard/MarketsGrid";
 import Footer from "@/components/dashboard/Footer";
 import ThemeToggle from "@/components/dashboard/ThemeToggle";
@@ -14,6 +13,9 @@ import { Market } from "@/types";
 import CountdownTimer from "@/components/CountdownTimer";
 import { useAppDispatch } from "@/redux/store";
 import { getEvents } from "@/redux/actions/eventsAction";
+import EventsTable from "@/components/EventsTable";
+import { useSelector } from "react-redux";
+import { eventsSelector } from "@/redux/reducers";
 
 const REFRESH_INTERVAL_MS = 120000; // Changed from 20000 to 120000 (2 minutes)
 
@@ -96,6 +98,9 @@ export default function Home() {
   }, [fetchMarkets]);
 
   const dispatch = useAppDispatch();
+
+  const { data: eventData, loading: eventLoading } =
+    useSelector(eventsSelector);
 
   useEffect(() => {
     dispatch(getEvents());
@@ -213,7 +218,11 @@ export default function Home() {
           </div>
         ) : (
           <>
-            {view === "table" && <MarketsTable markets={markets} />}
+            {/* {view === "table" && <MarketsTable markets={markets} />} */}
+            {view === "table" && (
+              <EventsTable data={eventData?.results || []} loading={eventLoading} />
+            )}
+
             {view === "grid" && <MarketsGrid markets={markets} />}
           </>
         )}

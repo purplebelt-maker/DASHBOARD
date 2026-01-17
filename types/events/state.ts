@@ -5,8 +5,8 @@ export interface IEvent {
   slug: string;
   description?: string;
 
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
 
   liquidity: number;
   volume24hr: number;
@@ -23,8 +23,8 @@ export interface IEvent {
   categoryId: number;
   categorySlug: number;
 
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface IEventResponse {

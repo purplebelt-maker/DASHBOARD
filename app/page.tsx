@@ -4,102 +4,26 @@
 import { useState, useEffect, useCallback } from "react";
 import Header from "@/components/dashboard/Header";
 import ControlBar from "@/components/dashboard/ControlBar";
-import MarketsGrid from "@/components/dashboard/MarketsGrid";
 import Footer from "@/components/dashboard/Footer";
 import ThemeToggle from "@/components/dashboard/ThemeToggle";
 import PrivacyModal from "@/components/dashboard/PrivacyModal";
 import RefreshNotification from "@/components/dashboard/RefreshNotification";
 import SkeletonLoader from "@/components/ui/SkeletonLoader";
 import { Market } from "@/types";
-import CountdownTimer from "@/components/CountdownTimer";
 import { useAppDispatch } from "@/redux/store";
 import { getEvents } from "@/redux/actions/eventsAction";
 import EventsTable from "@/components/EventsTable";
 import { useSelector } from "react-redux";
 import { eventsSelector } from "@/redux/reducers";
 import { EndingIn, EventCategory, SortBy } from "@/types/events/filters";
-import { eventToMarket } from "@/lib/mappers/eventToMarket";
 import EventsGrid from "@/components/EventsGrid";
-
-const REFRESH_INTERVAL_MS = 120000; // Changed from 20000 to 120000 (2 minutes)
-
 export type SortOrder = "asc" | "desc";
 
 export default function Home() {
   const [view, setView] = useState<"table" | "grid">("table");
-  const [markets, setMarkets] = useState<Market[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  
   const [lastRefreshTime, setLastRefreshTime] = useState<Date>(new Date());
   const [showRefreshNotification, setShowRefreshNotification] = useState(false);
-
-  const [volumeSortOrder, setVolumeSortOrder] = useState<SortOrder>("desc");
-  const [countdownKey, setCountdownKey] = useState(0);
-
-  const fetchMarkets = useCallback(
-    async (isRefresh = false) => {
-      try {
-        if (!isRefresh) {
-          setLoading(true);
-        }
-        setError(null);
-
-        const cacheBuster = isRefresh
-          ? `?_t=${Date.now()}`
-          : `?_t=${Date.now()}`;
-        const params = new URLSearchParams({
-          order: volumeSortOrder,
-          _t: Date.now().toString(),
-        });
-
-        const response = await fetch(`/api/markets?${params.toString()}`, {
-          cache: "no-store",
-          headers: {
-            "Cache-Control": "no-cache, no-store, must-revalidate",
-            Pragma: "no-cache",
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error(`Failed to fetch markets: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-
-        if (data.error) {
-          throw new Error(data.message || data.error);
-        }
-
-        console.log("markets data is ", markets);
-
-        setMarkets(data.markets || []);
-        setLastRefreshTime(new Date());
-        setCountdownKey((prev) => prev + 1); // Reset countdown
-
-        if (isRefresh) {
-          setShowRefreshNotification(true);
-        }
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to fetch markets",
-        );
-        if (!isRefresh) {
-          setLoading(false);
-        }
-      } finally {
-        if (!isRefresh) {
-          setLoading(false);
-        }
-      }
-    },
-    [volumeSortOrder],
-  );
-
-  useEffect(() => {
-    fetchMarkets(false);
-    const interval = setInterval(() => fetchMarkets(true), REFRESH_INTERVAL_MS);
-    return () => clearInterval(interval);
-  }, [fetchMarkets]);
 
   const dispatch = useAppDispatch();
 
@@ -125,18 +49,20 @@ export default function Home() {
 
   const [filtersLoading, setFiltersLoading] = useState(false);
 
+  const fetchEvents = async () => {
+    setFiltersLoading(true);
+    await dispatch(
+      getEvents({
+        page: eventPage,
+        limit: eventLimit,
+        ...eventFilters,
+      }),
+    );
+    setFiltersLoading(false);
+  };
+
   useEffect(() => {
-    (async () => {
-      setFiltersLoading(true);
-      await dispatch(
-        getEvents({
-          page: eventPage,
-          limit: eventLimit,
-          ...eventFilters,
-        }),
-      );
-      setFiltersLoading(false);
-    })();
+    fetchEvents();
   }, [eventPage, eventFilters, eventLimit]);
 
   return (
@@ -148,12 +74,14 @@ export default function Home() {
         onComplete={() => setShowRefreshNotification(false)}
       />
       <Header />
+      
 
       <ControlBar
         view={view}
         onViewChange={setView}
         lastRefreshTime={lastRefreshTime}
       />
+      
 
       {/* <div className="container mx-auto px-4 pt-4">
         <CountdownTimer
@@ -438,40 +366,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-        ) : error && markets.length === 0 ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="text-center max-w-md">
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/20">
-                <svg
-                  className="h-6 w-6 text-red-600 dark:text-red-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                  />
-                </svg>
-              </div>
-              <h3 className="mt-4 text-lg font-semibold text-gray-900 dark:text-white">
-                Failed to load markets
-              </h3>
-              <p className="mt-2 text-sm text-red-600 dark:text-red-400">
-                {error}
-              </p>
-              <button
-                onClick={() => fetchMarkets(false)}
-                className="mt-6 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-              >
-                Retry
-              </button>
-            </div>
-          </div>
-        ) : markets.length === 0 ? (
+        ) : eventData?.results?.length === 0 ? (
           <div className="flex items-center justify-center py-12">
             <div className="text-center">
               <svg

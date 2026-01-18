@@ -21,7 +21,7 @@ export type SortOrder = "asc" | "desc";
 
 export default function Home() {
   const [view, setView] = useState<"table" | "grid">("table");
-  
+
   const [lastRefreshTime, setLastRefreshTime] = useState<Date>(new Date());
   const [showRefreshNotification, setShowRefreshNotification] = useState(false);
 
@@ -74,14 +74,12 @@ export default function Home() {
         onComplete={() => setShowRefreshNotification(false)}
       />
       <Header />
-      
 
       <ControlBar
         view={view}
         onViewChange={setView}
         lastRefreshTime={lastRefreshTime}
       />
-      
 
       {/* <div className="container mx-auto px-4 pt-4">
         <CountdownTimer
@@ -201,7 +199,10 @@ export default function Home() {
               <div className="relative">
                 <select
                   value={eventLimit}
-                  onChange={(e) => setEventLimit(Number(e.target.value))}
+                  onChange={(e) => {
+                    setEventLimit(Number(e.target.value));
+                    setEventPage(1)
+                  }}
                   className="w-full appearance-none rounded-xl border border-gray-300/80 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-sm font-medium text-gray-900 dark:text-white shadow-sm hover:border-gray-400 dark:hover:border-slate-500 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 transition-all duration-200 cursor-pointer"
                 >
                   <option value={10}>10</option>

@@ -354,7 +354,7 @@ export default function Home() {
         </div>
       </div>
 
-      <main className="container mx-auto px-4 pb-4 pt-8 sm:px-6 lg:px-8">
+      <main className="container mx-auto pb-4 pt-8">
         {eventLoading || filtersLoading ? (
           <div className="space-y-4">
             <SkeletonLoader />

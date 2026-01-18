@@ -97,6 +97,21 @@ export default function EventsTable({
       cell: ({ getValue }) => formatCurrency(getValue<number>()),
     },
     {
+      accessorKey: "volume1wk",
+      header: "Volume (week)",
+      cell: ({ getValue }) => formatCurrency(getValue<number>()),
+    },
+    // {
+    //   accessorKey: "volume1mo",
+    //   header: "Volume (month)",
+    //   cell: ({ getValue }) => formatCurrency(getValue<number>()),
+    // },
+    // {
+    //   accessorKey: "volume1yr",
+    //   header: "Volume (year)",
+    //   cell: ({ getValue }) => formatCurrency(getValue<number>()),
+    // },
+    {
       accessorKey: "volumeTotal",
       header: "Volume (Total)",
       cell: ({ getValue }) => formatCurrency(getValue<number>()),

@@ -3,9 +3,9 @@ import axios from "axios";
 import { setEventsFailure, setEventsSuccess } from "../reducers/eventReducer";
 import { EventsQueryParams } from "@/types/events/filters";
 
-export const backendUrl = "http://localhost:6900";
+// export const backendUrl = "http://localhost:6900";
 
-// export const backendUrl = "https://api.predictionmarketedge.com"
+export const backendUrl = "https://api.predictionmarketedge.com"
 
 export const BackendInstance = axios.create({
   baseURL: `${backendUrl}/api/`,

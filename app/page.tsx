@@ -76,11 +76,11 @@ export default function Home() {
       />
       <Header />
 
-      <ControlBar
+      {/* <ControlBar
         view={view}
         onViewChange={setView}
         lastRefreshTime={lastRefreshTime}
-      />
+      /> */}
 
       {/* <div className="container mx-auto px-4 pt-4">
         <CountdownTimer

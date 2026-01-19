@@ -17,7 +17,7 @@ import { useSelector } from "react-redux";
 import { eventsSelector } from "@/redux/reducers";
 import { EndingIn, EventCategory, SortBy } from "@/types/events/filters";
 import EventsGrid from "@/components/EventsGrid";
-import { CirclePower, RotateCcw } from "lucide-react";
+import { Calendar, ChevronDown, CirclePower, Filter, LayoutGrid, RotateCcw, Table2 } from "lucide-react";
 export type SortOrder = "asc" | "desc";
 
 export default function Home() {
@@ -91,6 +91,7 @@ export default function Home() {
       </div> */}
 
       {/* EVENTS FILTER BAR - IMPROVED DESIGN */}
+      {/* EVENTS FILTER BAR - IMPROVED DESIGN */}
       <div className="container mx-auto mt-6">
         <div className="rounded-2xl border border-gray-200/80 dark:border-slate-700/70 bg-gradient-to-br from-white/50 to-gray-50/30 dark:from-slate-900/40 dark:to-slate-800/30 backdrop-blur-sm p-6 shadow-lg shadow-gray-100/50 dark:shadow-slate-900/20">
           {/* Section Header */}
@@ -106,7 +107,7 @@ export default function Home() {
           </div>
 
           {/* Main Filters Row */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-3 mb-6">
             {/* Sort By */}
             <div className="lg:col-span-3">
               <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wider">
@@ -121,7 +122,7 @@ export default function Home() {
                       sortBy: e.target.value as SortBy,
                     }))
                   }
-                  className="w-full appearance-none rounded-xl border border-gray-300/80 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-sm font-medium text-gray-900 dark:text-white shadow-sm hover:border-gray-400 dark:hover:border-slate-500 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 transition-all duration-200 cursor-pointer"
+                  className="w-full appearance-none rounded-xl border border-gray-300/80 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-2.5 text-sm font-medium text-gray-900 dark:text-white shadow-sm hover:border-gray-400 dark:hover:border-slate-500 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 transition-all duration-200 cursor-pointer"
                 >
                   <option value="volume24hr">Volume (24h)</option>
                   <option value="volumeTotal">Volume (Total)</option>
@@ -131,19 +132,7 @@ export default function Home() {
                   <option value="volume1yr">Volume (1 year)</option>
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                  <svg
-                    className="h-4 w-4 text-gray-500 dark:text-gray-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
+                  <ChevronDown className="h-4 w-4 text-gray-500 dark:text-gray-400" />
                 </div>
               </div>
             </div>
@@ -164,7 +153,7 @@ export default function Home() {
                         : undefined,
                     }))
                   }
-                  className="w-full appearance-none rounded-xl border border-gray-300/80 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-sm font-medium text-gray-900 dark:text-white shadow-sm hover:border-gray-400 dark:hover:border-slate-500 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 transition-all duration-200 cursor-pointer"
+                  className="w-full appearance-none rounded-xl border border-gray-300/80 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-2.5 text-sm font-medium text-gray-900 dark:text-white shadow-sm hover:border-gray-400 dark:hover:border-slate-500 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 transition-all duration-200 cursor-pointer"
                 >
                   <option value="">Any time</option>
                   <option value="7d">7 days</option>
@@ -175,19 +164,7 @@ export default function Home() {
                   <option value="1yr">1 year</option>
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                  <svg
-                    className="h-4 w-4 text-gray-500 dark:text-gray-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
+                  <Calendar className="h-4 w-4 text-gray-500 dark:text-gray-400" />
                 </div>
               </div>
             </div>
@@ -195,7 +172,7 @@ export default function Home() {
             {/* Rows per page */}
             <div className="lg:col-span-2">
               <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wider">
-                Rows per page
+                Per page
               </label>
               <div className="relative">
                 <select
@@ -204,27 +181,15 @@ export default function Home() {
                     setEventLimit(Number(e.target.value));
                     setEventPage(1);
                   }}
-                  className="w-full appearance-none rounded-xl border border-gray-300/80 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-sm font-medium text-gray-900 dark:text-white shadow-sm hover:border-gray-400 dark:hover:border-slate-500 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 transition-all duration-200 cursor-pointer"
+                  className="w-full appearance-none rounded-xl border border-gray-300/80 dark:border-slate-600 bg-white dark:bg-slate-800 px-3 py-2.5 text-sm font-medium text-gray-900 dark:text-white shadow-sm hover:border-gray-400 dark:hover:border-slate-500 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 transition-all duration-200 cursor-pointer"
                 >
                   <option value={10}>10</option>
                   <option value={20}>20</option>
                   <option value={50}>50</option>
                   <option value={100}>100</option>
                 </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                  <svg
-                    className="h-4 w-4 text-gray-500 dark:text-gray-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 6h16M4 12h16m-7 6h7"
-                    />
-                  </svg>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                  <ChevronDown className="h-4 w-4 text-gray-500 dark:text-gray-400" />
                 </div>
               </div>
             </div>
@@ -240,26 +205,56 @@ export default function Home() {
                   setEventLimit(20);
                   setEventPage(1);
                 }}
-                className="w-full rounded-xl border border-gray-300/80 dark:border-slate-600 bg-gradient-to-r from-gray-50 to-white dark:from-slate-800 dark:to-slate-900 px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 hover:border-gray-400 dark:hover:border-slate-500 transition-all duration-200 shadow-sm"
+                className="w-full rounded-xl border border-gray-300/80 dark:border-slate-600 bg-gradient-to-r from-gray-50 to-white dark:from-slate-800 dark:to-slate-900 px-3 py-2.5 text-xs font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 hover:border-gray-400 dark:hover:border-slate-500 transition-all duration-200 shadow-sm"
               >
-                <div className="flex items-center justify-center gap-2">
-                  <CirclePower size={16} />
-                  Reset All
+                <div className="flex items-center justify-center gap-1.5">
+                  <CirclePower size={14} />
+                  <span>Reset</span>
                 </div>
               </button>
             </div>
-            <div className="lg:col-span-2 flex items-end">
+
+            {/* Refresh */}
+            <div className="lg:col-span-1 flex items-end">
               <button
                 onClick={() => {
                   fetchEvents();
                 }}
-                className="w-full rounded-xl border border-gray-300/80 dark:border-slate-600 bg-gradient-to-r from-gray-50 to-white dark:from-slate-800 dark:to-slate-900 px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 hover:border-gray-400 dark:hover:border-slate-500 transition-all duration-200 shadow-sm"
+                className="w-full rounded-xl border border-gray-300/80 dark:border-slate-600 bg-gradient-to-r from-gray-50 to-white dark:from-slate-800 dark:to-slate-900 px-2 py-2.5 text-xs font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 hover:border-gray-400 dark:hover:border-slate-500 transition-all duration-200 shadow-sm"
+                title="Refresh"
               >
-                <div className="flex items-center justify-center gap-2">
-                  <RotateCcw size={16}/>
-                  Refresh
+                <div className="flex items-center justify-center">
+                  <RotateCcw size={14} />
                 </div>
               </button>
+            </div>
+
+            {/* View Toggle */}
+            <div className="lg:col-span-1 flex items-end">
+              <div className="w-full flex rounded-xl border border-gray-300/80 dark:border-slate-600 bg-white dark:bg-slate-800 overflow-hidden shadow-sm">
+                <button
+                  onClick={() => setView("table")}
+                  className={`flex-1 flex items-center justify-center px-1.5 py-2.5 transition-all duration-200 ${
+                    view === "table"
+                      ? "bg-blue-600 text-white"
+                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
+                  }`}
+                  title="Table View"
+                >
+                  <Table2 className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={() => setView("grid")}
+                  className={`flex-1 flex items-center justify-center px-1.5 py-2.5 transition-all duration-200 ${
+                    view === "grid"
+                      ? "bg-blue-600 text-white"
+                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
+                  }`}
+                  title="Grid View"
+                >
+                  <LayoutGrid className="h-4 w-4" />
+                </button>
+              </div>
             </div>
           </div>
 
@@ -303,11 +298,11 @@ export default function Home() {
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
+                          strokeWidth={3}
                         >
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
-                            strokeWidth={2}
                             d="M5 13l4 4L19 7"
                           />
                         </svg>
@@ -323,19 +318,7 @@ export default function Home() {
           {(eventFilters.categoryId?.length || 0) > 0 && (
             <div className="mt-4 flex items-center justify-between rounded-lg bg-blue-50/50 dark:bg-blue-900/10 px-4 py-2">
               <div className="flex items-center gap-2">
-                <svg
-                  className="h-4 w-4 text-blue-600 dark:text-blue-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
-                  />
-                </svg>
+                <Filter className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                 <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
                   {eventFilters.categoryId?.length || 0} categories selected
                 </span>

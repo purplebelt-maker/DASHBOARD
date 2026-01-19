@@ -17,6 +17,7 @@ import { useSelector } from "react-redux";
 import { eventsSelector } from "@/redux/reducers";
 import { EndingIn, EventCategory, SortBy } from "@/types/events/filters";
 import EventsGrid from "@/components/EventsGrid";
+import { CirclePower, RotateCcw } from "lucide-react";
 export type SortOrder = "asc" | "desc";
 
 export default function Home() {
@@ -201,7 +202,7 @@ export default function Home() {
                   value={eventLimit}
                   onChange={(e) => {
                     setEventLimit(Number(e.target.value));
-                    setEventPage(1)
+                    setEventPage(1);
                   }}
                   className="w-full appearance-none rounded-xl border border-gray-300/80 dark:border-slate-600 bg-white dark:bg-slate-800 px-4 py-3 text-sm font-medium text-gray-900 dark:text-white shadow-sm hover:border-gray-400 dark:hover:border-slate-500 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 transition-all duration-200 cursor-pointer"
                 >
@@ -242,20 +243,21 @@ export default function Home() {
                 className="w-full rounded-xl border border-gray-300/80 dark:border-slate-600 bg-gradient-to-r from-gray-50 to-white dark:from-slate-800 dark:to-slate-900 px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 hover:border-gray-400 dark:hover:border-slate-500 transition-all duration-200 shadow-sm"
               >
                 <div className="flex items-center justify-center gap-2">
-                  <svg
-                    className="h-4 w-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                    />
-                  </svg>
+                  <CirclePower size={16} />
                   Reset All
+                </div>
+              </button>
+            </div>
+            <div className="lg:col-span-2 flex items-end">
+              <button
+                onClick={() => {
+                  fetchEvents();
+                }}
+                className="w-full rounded-xl border border-gray-300/80 dark:border-slate-600 bg-gradient-to-r from-gray-50 to-white dark:from-slate-800 dark:to-slate-900 px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 hover:border-gray-400 dark:hover:border-slate-500 transition-all duration-200 shadow-sm"
+              >
+                <div className="flex items-center justify-center gap-2">
+                  <RotateCcw size={16}/>
+                  Refresh
                 </div>
               </button>
             </div>

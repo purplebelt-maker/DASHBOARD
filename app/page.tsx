@@ -17,13 +17,20 @@ import { useSelector } from "react-redux";
 import { eventsSelector } from "@/redux/reducers";
 import { EndingIn, EventCategory, SortBy } from "@/types/events/filters";
 import EventsGrid from "@/components/EventsGrid";
-import { Calendar, ChevronDown, CirclePower, Filter, LayoutGrid, RotateCcw, Table2 } from "lucide-react";
+import {
+  Calendar,
+  ChevronDown,
+  CirclePower,
+  Filter,
+  LayoutGrid,
+  RotateCcw,
+  Table2,
+} from "lucide-react";
 export type SortOrder = "asc" | "desc";
 
 export default function Home() {
   const [view, setView] = useState<"table" | "grid">("table");
 
-  const [lastRefreshTime, setLastRefreshTime] = useState<Date>(new Date());
   const [showRefreshNotification, setShowRefreshNotification] = useState(false);
 
   const dispatch = useAppDispatch();
@@ -70,27 +77,12 @@ export default function Home() {
     <div className="min-h-screen bg-gray-50 dark:bg-[#0f172a] transition-colors duration-300">
       <PrivacyModal />
       <ThemeToggle />
-      <RefreshNotification
+      {/* <RefreshNotification
         show={showRefreshNotification}
         onComplete={() => setShowRefreshNotification(false)}
-      />
+      /> */}
       <Header />
 
-      {/* <ControlBar
-        view={view}
-        onViewChange={setView}
-        lastRefreshTime={lastRefreshTime}
-      /> */}
-
-      {/* <div className="container mx-auto px-4 pt-4">
-        <CountdownTimer
-          key={countdownKey}
-          totalSeconds={120}
-          onComplete={() => {}}
-        />
-      </div> */}
-
-      {/* EVENTS FILTER BAR - IMPROVED DESIGN */}
       {/* EVENTS FILTER BAR - IMPROVED DESIGN */}
       <div className="container mx-auto mt-6">
         <div className="rounded-2xl border border-gray-200/80 dark:border-slate-700/70 bg-gradient-to-br from-white/50 to-gray-50/30 dark:from-slate-900/40 dark:to-slate-800/30 backdrop-blur-sm p-6 shadow-lg shadow-gray-100/50 dark:shadow-slate-900/20">

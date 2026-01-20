@@ -11,9 +11,9 @@ export const metadata: Metadata = {
     "Live prediction market data dashboard showing top Polymarket markets by volume",
   viewport: "width=device-width, initial-scale=1",
   icons: {
-    icon: "/favicon.PNG",
-    shortcut: "/favicon.PNG",
-    apple: "/favicon.PNG",
+    icon: "/updated-favicon.png",
+    shortcut: "/updated-favicon.png",
+    apple: "/updated-favicon.png",
   },
 };
 

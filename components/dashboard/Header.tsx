@@ -6,7 +6,9 @@ import { useTheme } from "@/contexts/ThemeContext";
 
 function Header() {
   const { theme } = useTheme();
-  const logoSrc = theme === "light" ? "/logo-dark.png" : "/logo-light.png";
+  // const logoSrc = theme === "light" ? "/logo-dark.png" : "/logo-light.png";
+    const logoSrc = "/updated-logo.png"
+
 
   return (
     <div className="container mx-auto px-4 py-6 sm:px-6 lg:px-8">

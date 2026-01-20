@@ -132,7 +132,7 @@ export default function Home() {
             {/* Ending In */}
             <div className="lg:col-span-3">
               <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wider">
-                Ending in
+                DEADLINE TRACKER (ENDING IN)
               </label>
               <div className="relative">
                 <select

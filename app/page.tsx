@@ -26,6 +26,7 @@ import {
   RotateCcw,
   Table2,
 } from "lucide-react";
+import FeedbackButton from "@/components/FeedbackButton";
 export type SortOrder = "asc" | "desc";
 
 export default function Home() {
@@ -75,6 +76,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0f172a] transition-colors duration-300">
+      <FeedbackButton />
+
       <PrivacyModal />
       <ThemeToggle />
       {/* <RefreshNotification
@@ -101,7 +104,7 @@ export default function Home() {
           {/* Main Filters Row */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-3 mb-6">
             {/* Sort By */}
-            <div className="lg:col-span-3">
+            <div className="lg:col-span-2">
               <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wider">
                 Sort by
               </label>
@@ -132,7 +135,7 @@ export default function Home() {
             {/* Ending In */}
             <div className="lg:col-span-3">
               <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wider">
-                Ending in
+                DEADLINE TRACKER (ENDING IN)
               </label>
               <div className="relative">
                 <select
@@ -201,13 +204,13 @@ export default function Home() {
               >
                 <div className="flex items-center justify-center gap-1.5">
                   <CirclePower size={14} />
-                  <span>Reset</span>
+                  <span>Reset Filters</span>
                 </div>
               </button>
             </div>
 
             {/* Refresh */}
-            <div className="lg:col-span-1 flex items-end">
+            <div className="lg:col-span-3 flex items-end">
               <button
                 onClick={() => {
                   fetchEvents();
@@ -215,8 +218,9 @@ export default function Home() {
                 className="w-full rounded-xl border border-gray-300/80 dark:border-slate-600 bg-gradient-to-r from-gray-50 to-white dark:from-slate-800 dark:to-slate-900 px-2 py-2.5 text-xs font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 hover:border-gray-400 dark:hover:border-slate-500 transition-all duration-200 shadow-sm"
                 title="Refresh"
               >
-                <div className="flex items-center justify-center">
+                <div className="flex items-center justify-center gap-1.5">
                   <RotateCcw size={14} />
+                  Live probability refresh
                 </div>
               </button>
             </div>

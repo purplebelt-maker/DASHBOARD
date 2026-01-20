@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import { Provider } from "react-redux";
 import store from "@/redux/store";
 import Providers from "@/providers";
+import FeedbackButton from "@/components/FeedbackButton";
 
 export const metadata: Metadata = {
   title: "Polymarket Dashboard | Live Prediction Market Data",
@@ -11,9 +12,9 @@ export const metadata: Metadata = {
     "Live prediction market data dashboard showing top Polymarket markets by volume",
   viewport: "width=device-width, initial-scale=1",
   icons: {
-    icon: "/favicon.PNG",
-    shortcut: "/favicon.PNG",
-    apple: "/favicon.PNG",
+    icon: "/updated-favicon.png",
+    shortcut: "/updated-favicon.png",
+    apple: "/updated-favicon.png",
   },
 };
 

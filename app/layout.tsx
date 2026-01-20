@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import { Provider } from "react-redux";
 import store from "@/redux/store";
 import Providers from "@/providers";
+import FeedbackButton from "@/components/FeedbackButton";
 
 export const metadata: Metadata = {
   title: "Polymarket Dashboard | Live Prediction Market Data",

@@ -3,9 +3,14 @@ import axios from "axios";
 import { setEventsFailure, setEventsSuccess } from "../reducers/eventReducer";
 import { EventsQueryParams } from "@/types/events/filters";
 
-// export const backendUrl = "http://localhost:6900";
+export const backendUrl = "http://localhost:6900";
+export const config = {
+  headers: {
+    "Content-Type": " application/json ", // application/x-www.form-urlencoded
+  },
+};
 
-export const backendUrl = "https://api.predictionmarketedge.com"
+// export const backendUrl = "https://api.predictionmarketedge.com";
 
 export const BackendInstance = axios.create({
   baseURL: `${backendUrl}/api/`,
@@ -37,6 +42,25 @@ export const getEvents = createAsyncThunk(
       return true;
     } catch (err) {
       dispatch(setEventsFailure());
+      throw false;
+    }
+  },
+);
+
+interface ISuggesstionPayload {
+  email?: string;
+  feedback: string;
+}
+
+export const submitSuggesstion = createAsyncThunk(
+  "events/get",
+  async (data: ISuggesstionPayload, { dispatch }) => {
+    try {
+      const _data = JSON.stringify(data);
+      const res = await BackendInstance.post(`/events/email`, _data, config);
+
+      return true;
+    } catch (err) {
       throw false;
     }
   },

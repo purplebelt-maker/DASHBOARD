@@ -26,6 +26,7 @@ import {
   RotateCcw,
   Table2,
 } from "lucide-react";
+import FeedbackButton from "@/components/FeedbackButton";
 export type SortOrder = "asc" | "desc";
 
 export default function Home() {
@@ -75,6 +76,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0f172a] transition-colors duration-300">
+      <FeedbackButton />
+
       <PrivacyModal />
       <ThemeToggle />
       {/* <RefreshNotification

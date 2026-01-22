@@ -90,9 +90,6 @@ function Header() {
                 <div className="flex items-center gap-1.5">
                   <div className="w-2 h-2 rounded-full bg-amber-500" />
                   <span>Deadline Tracker</span>
-                  <span className="text-xs bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300 px-2 py-0.5 rounded-full">
-                    24h to 7 Days
-                  </span>
                 </div>
               </div>
             </div>

@@ -5,7 +5,7 @@ import { memo, useMemo } from "react";
 import { IEvent } from "@/types/events/state";
 import { formatCurrency, formatDate } from "@/lib/utils/format";
 import { calculateCountdown, formatCountdown } from "@/lib/utils/countdown";
-import { getYesNoProbability } from "@/lib/utils/probability";
+import { getOutcomeProbabilities } from "@/lib/utils/probability";
 import { EventCategory, EventCategorySlug } from "@/types/events/filters";
 
 // Enhanced badge colors with better contrast and modern gradient options
@@ -104,13 +104,13 @@ function EventCard({ event }: EventCardProps) {
 
   const countdownText = useMemo(() => formatCountdown(countdown), [countdown]);
 
-  const probability = useMemo(
-    () => getYesNoProbability(event.markets),
+  const outcomes = useMemo(
+    () => getOutcomeProbabilities(event.markets),
     [event.markets],
   );
 
-  const yesPct = Math.round((probability?.yes ?? 0) * 100);
-  const noPct = 100 - yesPct;
+  const outcome1Pct = Math.round((outcomes?.outcome1.probability ?? 0) * 100);
+  const outcome2Pct = 100 - outcome1Pct;
 
   const categories = getEventCategories(event.tagIds);
 
@@ -204,17 +204,17 @@ function EventCard({ event }: EventCardProps) {
       <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-[#0f172a] dark:to-[#1a2236] rounded-xl p-4 mb-5 border border-gray-200 dark:border-gray-700">
         <div className="mb-3 flex justify-between items-center">
           <span className="text-blue-600 dark:text-blue-400 font-bold text-xl">
-            Yes {yesPct}%
+            {outcomes?.outcome1.name || "Yes"} {outcome1Pct}%
           </span>
           <span className="text-gray-600 dark:text-gray-400 font-semibold">
-            No {noPct}%
+            {outcomes?.outcome2.name || "No"} {outcome2Pct}%
           </span>
         </div>
 
         <div className="relative h-3 w-full rounded-full bg-gray-200 dark:bg-gray-800 overflow-hidden">
           <div
             className="h-full bg-gradient-to-r from-blue-500 to-blue-400 transition-all duration-500"
-            style={{ width: `${yesPct}%` }}
+            style={{ width: `${outcome1Pct}%` }}
           />
           <div className="absolute inset-0 rounded-full border border-gray-300/50 dark:border-gray-700/50 pointer-events-none" />
         </div>

@@ -7,7 +7,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { formatCurrency, formatDate } from "@/lib/utils/format";
-import { getYesNoProbability } from "@/lib/utils/probability";
+import { getOutcomeProbabilities } from "@/lib/utils/probability";
 import { formatEndsIn } from "@/lib/utils/endsIn";
 import { IEvent } from "@/types/events/state";
 import ProbabilityBar from "./ProbabilityBar";
@@ -79,11 +79,12 @@ export default function EventsTable({
       },
     },
 
+    // Update the column definition
     {
       header: "Probability",
       cell: ({ row }) => {
-        const prob = getYesNoProbability(row.original.markets);
-        return <ProbabilityBar yes={prob?.yes ?? null} no={prob?.no ?? null} />;
+        const prob = getOutcomeProbabilities(row.original.markets);
+        return <ProbabilityBar outcomes={prob} />;
       },
     },
     {

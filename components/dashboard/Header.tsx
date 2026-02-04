@@ -3,7 +3,7 @@
 import { memo, useState } from "react";
 import Image from "next/image";
 import { useTheme } from "@/contexts/ThemeContext";
-import { Info } from "lucide-react";
+import { Info, MousePointerClick } from "lucide-react";
 
 function Header() {
   const { theme } = useTheme();
@@ -64,6 +64,21 @@ function Header() {
                   </div>
                 )}
               </div>
+            </div>
+
+            {/* Call-to-Action Message */}
+            <div className="mb-4 flex items-center justify-center gap-2 text-base sm:text-lg">
+              <MousePointerClick
+                size={18}
+                className="text-blue-600 dark:text-blue-400 animate-pulse"
+              />
+              <span className="font-medium text-gray-700 dark:text-gray-300">
+                Click Events to View and Trade on{" "}
+                <span className="text-blue-600 dark:text-blue-400 font-semibold">
+                  Polymarket
+                </span>
+                !
+              </span>
             </div>
 
             {/* Subtle Divider */}

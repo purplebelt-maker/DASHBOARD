@@ -181,6 +181,7 @@ export default function EventsTable({
                 </td>
               </tr>
             ) : (
+              // In the tbody section, update the row mapping:
               table.getRowModel().rows.map((row) => (
                 <tr
                   key={row.id}
@@ -192,15 +193,30 @@ export default function EventsTable({
                     )
                   }
                 >
-                  {row.getVisibleCells().map((cell) => (
+                  {row.getVisibleCells().map((cell, index) => (
                     <td
                       key={cell.id}
                       className="px-3 py-4 text-sm text-gray-700 dark:text-gray-300"
                     >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
+                      {/* Add glowing dot to first cell */}
+                      {index === 0 && (
+                        <div className="flex items-center gap-2">
+                          <div className="relative">
+                            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                            <div className="absolute inset-0 w-2 h-2 rounded-full bg-green-500 opacity-50 animate-ping" />
+                          </div>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext(),
+                          )}
+                        </div>
                       )}
+                      {/* Render other cells normally */}
+                      {index !== 0 &&
+                        flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
                     </td>
                   ))}
                 </tr>

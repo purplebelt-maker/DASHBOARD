@@ -123,7 +123,7 @@ function EventCard({ event }: EventCardProps) {
       before:absolute before:inset-0 before:rounded-xl before:border before:border-transparent before:transition-all
       before:duration-300 hover:before:border-blue-200/50 dark:hover:before:border-blue-500/20"
       onClick={() =>
-        window.open(`https://polymarket.com/event/${event.slug}`, "_blank")
+        window.open(`https://polymarket.com/event/${event.slug}?via=michael-kane-mxwk`, "_blank")
       }
     >
       {/* Title */}

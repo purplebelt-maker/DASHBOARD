@@ -187,7 +187,7 @@ export default function EventsTable({
                   className="hover:bg-slate-200 dark:hover:bg-[#334155] transition-colors cursor-pointer"
                   onClick={() =>
                     window.open(
-                      `https://polymarket.com/event/${row.original.slug}`,
+                      `https://polymarket.com/event/${row.original.slug}?via=michael-kane-mxwk`,
                       "_blank",
                     )
                   }

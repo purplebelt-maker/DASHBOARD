@@ -29,7 +29,11 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.loading = false;
     },
+    authReset: () => {
+      return initialState;
+    },
   },
+
   extraReducers: (builder) => {
     builder.addCase(RESET, () => ({
       user: null,
@@ -39,7 +43,7 @@ const authSlice = createSlice({
   },
 });
 
-export const { userLoaded, clearSession } = authSlice.actions;
+export const { userLoaded, clearSession, authReset } = authSlice.actions;
 
 export const authSelector = (state: { auth: IAuthState }): IAuthState =>
   state.auth;

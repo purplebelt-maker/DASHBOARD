@@ -5,6 +5,7 @@ import { Provider } from "react-redux";
 import store from "@/redux/store";
 import Providers from "@/providers";
 import FeedbackButton from "@/components/FeedbackButton";
+import Alert from "@/components/Alert";
 
 export const metadata: Metadata = {
   title: "Polymarket Dashboard | Live Prediction Market Data",

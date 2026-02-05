@@ -1,8 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { BackendInstance, config } from "./eventsAction";
-import { userLoaded, clearSession } from "../reducers/authReducer";
+import { userLoaded, clearSession, authReset } from "../reducers/authReducer";
 import { ILoginFormData, IRegisterFormData } from "@/types/auth";
 import { RESET } from "../middleware/root/events";
+import { userLogout } from "@/lib/utils/logout";
+import { handlerError } from "@/lib/utils/ErrorHandler";
+import { updateAlert } from "./alertAction";
 
 // BackendInstance already has withCredentials: true, so the token cookie
 // is sent automatically on every request — no manual header needed.
@@ -23,6 +26,9 @@ export const Login = createAsyncThunk(
 
       return true;
     } catch (err) {
+      handlerError(err).forEach((error: string) => {
+        dispatch(updateAlert({ place: "tc", message: error, type: "danger" }));
+      });
       dispatch(clearSession());
       return false;
     }
@@ -82,6 +88,36 @@ export const loadUser = createAsyncThunk(
 export const logout = createAsyncThunk(
   "auth/logout",
   async (_, { dispatch }) => {
-    dispatch({ type: RESET });
+    let returnValue = false;
+    try {
+      /*
+      {FOR OFFLINE USE}
+      First call api then dispatch
+      action beacuse logout requires
+      secondary token while dispatching
+      logout action remove that.
+          */
+      await userLogout();
+
+      returnValue = true;
+    } catch (err) {
+      console.log("ERRORR OCCURRED", err);
+      return returnValue;
+    } finally {
+      /*
+      If api return error, still
+      dispatch action so that user 
+      states are clear and token is removed
+      */
+      // dispatch({
+      //   type: DISCONNECT_SOCKET
+      // });
+      dispatch({ type: RESET });
+      dispatch(authReset());
+      dispatch(clearSession());
+
+      // eslint-disable-next-line no-unsafe-finally
+      return returnValue;
+    }
   },
 );

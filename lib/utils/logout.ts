@@ -10,7 +10,7 @@ export const userLogout = async () => {
     Donot Include in try catch, calling function 
     will handle it
     */
-  return await BackendInstance.post("user/logout", null, config);
+  return await BackendInstance.post("user/logout", {}, config);
 };
 
 /**
@@ -18,6 +18,7 @@ export const userLogout = async () => {
  *
  */
 export const removeSecondaryToken = () => {
+  console.log("GOING TO REMOVE THE SECONDARY TOKEN");
   /*
     Useful For Offline Logout
     */

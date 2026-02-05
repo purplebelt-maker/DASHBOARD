@@ -4,16 +4,13 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Header from "@/components/dashboard/Header";
-import ControlBar from "@/components/dashboard/ControlBar";
 import Footer from "@/components/dashboard/Footer";
 import ThemeToggle from "@/components/dashboard/ThemeToggle";
 import PrivacyModal from "@/components/dashboard/PrivacyModal";
-import RefreshNotification from "@/components/dashboard/RefreshNotification";
 import SkeletonLoader from "@/components/ui/SkeletonLoader";
-import { Market } from "@/types";
 import { useAppDispatch } from "@/redux/store";
 import { getEvents } from "@/redux/actions/eventsAction";
-import { loadUser, logout } from "@/redux/actions/authAction";
+import { logout } from "@/redux/actions/authAction";
 import EventsTable from "@/components/EventsTable";
 import { useSelector } from "react-redux";
 import { eventsSelector, authSelector } from "@/redux/reducers";
@@ -79,11 +76,8 @@ export default function Home() {
     fetchEvents();
   }, [eventPage, eventFilters, eventLimit]);
 
-
-
   const handleLogout = async () => {
     await dispatch(logout());
-    router.push("/auth");
   };
 
   if (authLoading) {

@@ -1,14 +1,16 @@
 import { combineReducers } from "@reduxjs/toolkit";
 import eventReducer, { eventsSelector } from "./eventReducer";
 import authReducer, { authSelector } from "./authReducer";
+import alertReducer, { AlertSelector } from "./alertReducer";
 import { RESET } from "../middleware/root/events";
 
 const appReducer = combineReducers({
   event: eventReducer,
   auth: authReducer,
+  alert: alertReducer,
 });
 
-export { eventsSelector, authSelector };
+export { eventsSelector, authSelector, AlertSelector };
 
 export type RootState = ReturnType<typeof appReducer>;
 

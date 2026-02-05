@@ -7,7 +7,7 @@ export function middleware(request: NextRequest) {
   // Check if token exists in cookies
   const token = request.cookies.get('token')?.value // or 'authToken', whatever you named it
   
-  const isAuthPage = request.nextUrl.pathname.startsWith('/auth')
+  const isAuthPage = request.nextUrl.pathname.startsWith('/auth') || request.nextUrl.pathname.startsWith('/forgot') || request.nextUrl.pathname.startsWith('/reset')
   const isProtectedRoute = !isAuthPage // everything except /auth is protected
 
   // No token + trying to access protected page → redirect to /auth

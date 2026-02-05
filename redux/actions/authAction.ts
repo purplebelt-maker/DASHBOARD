@@ -49,6 +49,9 @@ export const register = createAsyncThunk(
 
       return true;
     } catch (err) {
+      handlerError(err).forEach((error: string) => {
+        dispatch(updateAlert({ place: "tc", message: error, type: "danger" }));
+      });
       return false;
     }
   },
@@ -118,6 +121,83 @@ export const logout = createAsyncThunk(
 
       // eslint-disable-next-line no-unsafe-finally
       return returnValue;
+    }
+  },
+);
+
+export const verifyEmail = createAsyncThunk(
+  "loginSlice/verifyEmail",
+  async (emailToken: string, { dispatch }) => {
+    const body = JSON.stringify({
+      emailToken: emailToken,
+    });
+    try {
+      const res = await BackendInstance.post("user/verify-email", body, config);
+
+      dispatch(
+        updateAlert({ place: "tc", message: res.data.msg, type: "success" }),
+      );
+      return true;
+    } catch (err) {
+      handlerError(err).forEach((error: string) => {
+        dispatch(updateAlert({ place: "tc", message: error, type: "danger" }));
+      });
+      return false;
+    }
+  },
+);
+
+export const forgotPassword = createAsyncThunk(
+  "loginSlice/verifyEmail",
+  async (email: string, { dispatch }) => {
+    const body = JSON.stringify({
+      email: email,
+    });
+    try {
+      const res = await BackendInstance.post(
+        "user/forgot-password",
+        body,
+        config,
+      );
+
+      dispatch(
+        updateAlert({ place: "tc", message: res.data.msg, type: "success" }),
+      );
+      return true;
+    } catch (err) {
+      handlerError(err).forEach((error: string) => {
+        dispatch(updateAlert({ place: "tc", message: error, type: "danger" }));
+      });
+      return false;
+    }
+  },
+);
+
+interface IResetPassword {
+  token: string;
+  password: string;
+  confirmPassword: string;
+}
+export const resetPassword = createAsyncThunk(
+  "loginSlice/verifyEmail",
+  async (body: IResetPassword, { dispatch }) => {
+    const data = JSON.stringify(body);
+    try {
+      const res = await BackendInstance.post(
+        "user/reset-password",
+        data,
+        config,
+      );
+
+      dispatch(
+        updateAlert({ place: "tc", message: res.data.msg, type: "success" }),
+      );
+      return true;
+    } catch (err) {
+      handlerError(err).forEach((error: string) => {
+        dispatch(updateAlert({ place: "tc", message: error, type: "danger" }));
+      });
+      return false;
     }
   },
 );

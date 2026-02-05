@@ -45,7 +45,8 @@ export const register = createAsyncThunk(
   async (formData: IRegisterFormData, { dispatch }) => {
     const body = JSON.stringify(formData);
     try {
-      await BackendInstance.post("user/register", body, config);
+      const res = await BackendInstance.post("user/register", body, config);
+      dispatch(updateAlert({ place: "tc", message: res.data.msg, type: "success" }));
 
       return true;
     } catch (err) {

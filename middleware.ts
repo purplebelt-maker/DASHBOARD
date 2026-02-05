@@ -1,29 +1,40 @@
-// middleware.ts (root level, same as app/ folder)
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
+// middleware.ts
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
-  // This runs on the SERVER before any page loads
-  // Check if token exists in cookies
-  const token = request.cookies.get('token')?.value // or 'authToken', whatever you named it
-  
-  const isAuthPage = request.nextUrl.pathname.startsWith('/auth') || request.nextUrl.pathname.startsWith('/forgot') || request.nextUrl.pathname.startsWith('/reset')
-  const isProtectedRoute = !isAuthPage // everything except /auth is protected
+  const token = request.cookies.get("token")?.value;
 
-  // No token + trying to access protected page → redirect to /auth
-  if (!token && isProtectedRoute) {
-    return NextResponse.redirect(new URL('/auth', request.url))
+  // Define public routes (routes that don't need authentication)
+  const publicRoutes = [
+    "/", // Landing page
+    "/auth",
+    "/auth/callback",
+    "/forgot-password",
+    "/reset-password",
+    "/verify-email",
+  ];
+
+  // Check if current path is a public route
+  const isPublicRoute = publicRoutes.some(
+    (route) =>
+      request.nextUrl.pathname === route ||
+      request.nextUrl.pathname.startsWith(route + "/"),
+  );
+
+  // If it's a public route, allow access
+  if (isPublicRoute) {
+    return NextResponse.next();
   }
 
-  // Has token + trying to access /auth → redirect to home
-  if (token && isAuthPage) {
-    return NextResponse.redirect(new URL('/', request.url))
+  // For all other routes (protected routes), check for token
+  if (!token) {
+    return NextResponse.redirect(new URL("/auth", request.url));
   }
 
-  return NextResponse.next() // Allow the request to continue
+  return NextResponse.next();
 }
 
-// Tell middleware which routes to run on
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)']
-}
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+};

@@ -12,7 +12,7 @@ import {
   filterSportsMarkets,
 } from "@/lib/utils/polymarketTransform";
 import { Market } from "@/types";
-import { SortOrder } from "@/app/page";
+import { SortOrder } from "@/app/(protected)/page";
 
 export async function GET(request: NextRequest) {
   try {

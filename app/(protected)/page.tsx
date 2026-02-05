@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import Header from "@/components/dashboard/Header";
 import ControlBar from "@/components/dashboard/ControlBar";
 import Footer from "@/components/dashboard/Footer";
@@ -12,9 +13,10 @@ import SkeletonLoader from "@/components/ui/SkeletonLoader";
 import { Market } from "@/types";
 import { useAppDispatch } from "@/redux/store";
 import { getEvents } from "@/redux/actions/eventsAction";
+import { loadUser, logout } from "@/redux/actions/authAction";
 import EventsTable from "@/components/EventsTable";
 import { useSelector } from "react-redux";
-import { eventsSelector } from "@/redux/reducers";
+import { eventsSelector, authSelector } from "@/redux/reducers";
 import { EndingIn, EventCategory, SortBy } from "@/types/events/filters";
 import EventsGrid from "@/components/EventsGrid";
 import {
@@ -23,6 +25,7 @@ import {
   CirclePower,
   Filter,
   LayoutGrid,
+  LogOut,
   RotateCcw,
   Table2,
 } from "lucide-react";
@@ -35,9 +38,11 @@ export default function Home() {
   const [showRefreshNotification, setShowRefreshNotification] = useState(false);
 
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   const { data: eventData, loading: eventLoading } =
     useSelector(eventsSelector);
+  const { user: authUser, loading: authLoading } = useSelector(authSelector);
 
   // filters
   // EVENTS pagination
@@ -74,12 +79,42 @@ export default function Home() {
     fetchEvents();
   }, [eventPage, eventFilters, eventLimit]);
 
+
+
+  const handleLogout = async () => {
+    await dispatch(logout());
+    router.push("/auth");
+  };
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#0f172a] transition-colors duration-300">
+        <div className="text-center">
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-600 border-r-transparent"></div>
+          <p className="mt-3 text-sm text-gray-600 dark:text-gray-400">
+            Verifying your session...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!authUser) return null;
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0f172a] transition-colors duration-300">
       <FeedbackButton />
 
       <PrivacyModal />
       <ThemeToggle />
+      <button
+        onClick={handleLogout}
+        className="fixed top-4 right-16 z-50 flex h-10 w-10 items-center justify-center rounded-lg border transition-all duration-300 hover:scale-110 dark:border-gray-700 dark:bg-[#1e293b] dark:hover:border-red-500 dark:hover:bg-[#334155] border-gray-300 bg-white hover:border-red-500 hover:bg-gray-50 shadow-lg"
+        aria-label="Logout"
+        title="Logout"
+      >
+        <LogOut className="h-5 w-5 text-gray-600 dark:text-gray-300" />
+      </button>
       {/* <RefreshNotification
         show={showRefreshNotification}
         onComplete={() => setShowRefreshNotification(false)}

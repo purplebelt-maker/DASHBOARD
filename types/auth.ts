@@ -1,7 +1,8 @@
 export interface IUser {
   id: string;
   email: string;
-  name?: string;
+  firstName: string;
+  lastName?: string;
 }
 
 export interface IAuthState {
@@ -24,5 +25,4 @@ export interface IRegisterFormData {
   email: string;
   password: string;
   confirmPassword: string;
-  
 }

@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { setEventsFailure, setEventsSuccess } from "../reducers/eventReducer";
+import { setEventsFailure, setEventsSuccess, setTodayEventsFailure, setTodayEventsSuccess } from "../reducers/eventReducer";
 import { EventsQueryParams } from "@/types/events/filters";
 
 export const backendUrl = "http://localhost:6900";
@@ -61,6 +61,23 @@ export const submitSuggesstion = createAsyncThunk(
 
       return true;
     } catch (err) {
+      throw false;
+    }
+  },
+);
+
+// today events
+
+export const getTodayEvents = createAsyncThunk(
+  "events/get",
+  async (_, { dispatch }) => {
+    try {
+      const res = await BackendInstance.get(`events/today`);
+
+      dispatch(setTodayEventsSuccess(res.data.data));
+      return true;
+    } catch (err) {
+      dispatch(setTodayEventsFailure());
       throw false;
     }
   },

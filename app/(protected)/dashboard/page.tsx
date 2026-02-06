@@ -97,18 +97,17 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0f172a] transition-colors duration-300">
-      <FeedbackButton />
 
       <PrivacyModal />
-      <ThemeToggle />
-      <button
+      {/* <ThemeToggle /> */}
+      {/* <button
         onClick={handleLogout}
         className="fixed top-4 right-16 z-50 flex h-10 w-10 items-center justify-center rounded-lg border transition-all duration-300 hover:scale-110 dark:border-gray-700 dark:bg-[#1e293b] dark:hover:border-red-500 dark:hover:bg-[#334155] border-gray-300 bg-white hover:border-red-500 hover:bg-gray-50 shadow-lg"
         aria-label="Logout"
         title="Logout"
       >
         <LogOut className="h-5 w-5 text-gray-600 dark:text-gray-300" />
-      </button>
+      </button> */}
       {/* <RefreshNotification
         show={showRefreshNotification}
         onComplete={() => setShowRefreshNotification(false)}

@@ -38,4 +38,6 @@ export interface IEventResponse {
 export interface IEventState {
   data: null | IEventResponse;
   loading: boolean;
+  todayEvents: null | IEvent[];
+  todayEventsLoading: boolean;
 }

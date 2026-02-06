@@ -1,9 +1,12 @@
-import { IEventResponse, IEventState } from "@/types/events/state";
+import { IEvent, IEventResponse, IEventState } from "@/types/events/state";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { toFormData } from "axios";
 
 const initialState: IEventState = {
   data: null,
   loading: true,
+  todayEvents: null,
+  todayEventsLoading: true,
 };
 
 const eventsSlice = createSlice({
@@ -17,10 +20,22 @@ const eventsSlice = createSlice({
     setEventsFailure: (state) => {
       state.loading = false;
     },
+    setTodayEventsSuccess: (state, { payload }: PayloadAction<IEvent[]>) => {
+      state.todayEvents = payload;
+      state.todayEventsLoading = false;
+    },
+    setTodayEventsFailure: (state) => {
+      state.todayEventsLoading = false;
+    },
   },
 });
 
-export const { setEventsFailure, setEventsSuccess } = eventsSlice.actions;
+export const {
+  setEventsFailure,
+  setEventsSuccess,
+  setTodayEventsFailure,
+  setTodayEventsSuccess,
+} = eventsSlice.actions;
 export default eventsSlice.reducer;
 
 /**

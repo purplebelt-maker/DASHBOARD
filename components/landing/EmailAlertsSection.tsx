@@ -8,7 +8,7 @@ export default function EmailAlertsSection() {
   const router = useRouter();
 
   const benefits = [
-    "Get notified 15 minutes after a market opens",
+    "Get notified about new markets daily",
     "Filter alerts by your preferred categories",
     "Never miss high-volume opportunities",
     "Customize alert frequency and preferences",
@@ -44,7 +44,7 @@ export default function EmailAlertsSection() {
 
             {/* Description */}
             <p className="text-xl text-gray-400 mb-8">
-              {`Get instant email notifications when new prediction markets open. 
+              {`Get daily email notifications when new prediction markets open. 
               While others are still browsing, you're already analyzing and positioning.`}
             </p>
 
@@ -63,8 +63,8 @@ export default function EmailAlertsSection() {
             {/* Stats Row */}
             <div className="grid grid-cols-3 gap-6 mb-8">
               <div>
-                <div className="text-3xl font-bold text-white mb-1">15min</div>
-                <div className="text-sm text-gray-400">Alert Speed</div>
+                <div className="text-3xl font-bold text-white mb-1">Daily</div>
+                <div className="text-sm text-gray-400">Email Alerts</div>
               </div>
               <div>
                 <div className="text-3xl font-bold text-white mb-1">24/7</div>

@@ -94,12 +94,6 @@ export default function DashboardNavbar({
               )}
             </button>
 
-            {/* Notifications */}
-            <button className="relative p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors">
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full" />
-            </button>
-
             {/* Profile Dropdown */}
             <div className="relative">
               <button

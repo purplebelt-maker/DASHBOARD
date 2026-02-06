@@ -19,6 +19,13 @@ export default function Home() {
   const [currentTime, setCurrentTime] = useState(new Date());
 
   const [isTogglingAlerts, setIsTogglingAlerts] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false); // Add this
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await dispatch(getTodayEvents());
+    setIsRefreshing(false);
+  };
 
   useEffect(() => {
     dispatch(getTodayEvents());
@@ -177,16 +184,19 @@ export default function Home() {
               </div>
 
               {/* Right Content - Refresh Button */}
+              {/* Right Content - Refresh Button */}
               <div className="lg:text-right">
                 <button
-                  onClick={() => dispatch(getTodayEvents())}
-                  disabled={todayEventsLoading}
-                  className="inline-flex items-center gap-2 bg-white hover:bg-blue-50 text-blue-600 font-bold px-6 py-3 rounded-xl transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                  onClick={handleRefresh}
+                  disabled={isRefreshing || todayEventsLoading}
+                  className="inline-flex items-center gap-2 bg-white hover:bg-blue-50 text-blue-600 font-bold px-6 py-3 rounded-xl transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg disabled:hover:scale-100"
                 >
                   <RefreshCw
-                    className={`w-5 h-5 ${todayEventsLoading ? "animate-spin" : ""}`}
+                    className={`w-5 h-5 ${isRefreshing || todayEventsLoading ? "animate-spin" : ""}`}
                   />
-                  {todayEventsLoading ? "Refreshing..." : "Refresh Now"}
+                  {isRefreshing || todayEventsLoading
+                    ? "Refreshing..."
+                    : "Refresh Now"}
                 </button>
                 <p className="text-xs text-blue-100 mt-2">
                   Auto-refreshes every 5 min

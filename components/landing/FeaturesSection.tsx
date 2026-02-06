@@ -7,8 +7,8 @@ export default function FeaturesSection() {
   const features = [
     {
       icon: <Bell className="w-6 h-6" />,
-      title: "Instant Email Alerts",
-      description: "Get notified within minutes when new prediction markets open. Be the first to spot opportunities.",
+      title: "Daily Email Alerts",
+      description: "Get notified daily when new prediction markets open. Be the first to spot opportunities.",
       color: "from-blue-500 to-cyan-500",
       bgColor: "bg-blue-500/10",
       borderColor: "border-blue-500/30",

@@ -29,7 +29,7 @@ export default function PricingSection() {
       period: "per month",
       description: "For serious traders",
       features: [
-        "Instant email alerts (15min)",
+        "Daily email alerts",
         "All 6+ categories",
         "Advanced sorting & filters",
         "Real-time market updates",

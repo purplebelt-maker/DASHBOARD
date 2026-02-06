@@ -57,7 +57,7 @@ export default function Hero() {
               <div className="flex items-center gap-2">
                 <Bell className="w-4 h-4 text-blue-400" />
                 <span className="text-sm text-gray-300">
-                  <span className="font-bold text-white">Instant</span> email
+                  <span className="font-bold text-white">Daily</span> email
                   alerts
                 </span>
               </div>

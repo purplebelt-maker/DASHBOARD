@@ -9,13 +9,16 @@ import { getTodayEvents } from "@/redux/actions/eventsAction";
 import EventsTable from "@/components/EventsTable";
 import { useSelector } from "react-redux";
 import { eventsSelector, authSelector } from "@/redux/reducers";
-import { Clock, Zap, TrendingUp, RefreshCw } from "lucide-react";
+import { Clock, Zap, TrendingUp, RefreshCw, Mail } from "lucide-react";
+import { toggleEmailAlerts } from "@/redux/actions/authAction";
 
 export default function Home() {
   const dispatch = useAppDispatch();
   const { todayEvents, todayEventsLoading } = useSelector(eventsSelector);
   const { user: authUser } = useSelector(authSelector);
   const [currentTime, setCurrentTime] = useState(new Date());
+
+  const [isTogglingAlerts, setIsTogglingAlerts] = useState(false);
 
   useEffect(() => {
     dispatch(getTodayEvents());
@@ -56,9 +59,56 @@ export default function Home() {
     });
   };
 
+  const handleToggleEmailAlerts = async () => {
+    setIsTogglingAlerts(true);
+    await dispatch(toggleEmailAlerts());
+    setIsTogglingAlerts(false);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-900 transition-colors duration-300">
       <main className="space-y-6">
+        {/* Email Alerts Toggle */}
+        <div className="rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 p-6 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Mail className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">
+                  Email Notifications
+                </h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Get notified when new markets are added in the last 24 hours
+                </p>
+              </div>
+            </div>
+
+            {/* Toggle Switch */}
+            <button
+              onClick={handleToggleEmailAlerts}
+              disabled={isTogglingAlerts}
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed ${
+                authUser?.emailAlerts
+                  ? "bg-purple-600"
+                  : "bg-gray-200 dark:bg-gray-700"
+              }`}
+            >
+              <span
+                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform flex items-center justify-center ${
+                  authUser?.emailAlerts ? "translate-x-6" : "translate-x-1"
+                }`}
+              >
+                {isTogglingAlerts && (
+                  <span className="absolute inset-0 flex items-center justify-center">
+                    <span className="h-3 w-3 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                  </span>
+                )}
+              </span>
+            </button>
+          </div>
+        </div>
         {/* Hero Banner */}
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 via-blue-500 to-purple-600 p-8 shadow-xl">
           {/* Decorative Background Elements */}

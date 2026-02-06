@@ -23,6 +23,11 @@ const authSlice = createSlice({
       state.user = payload.user;
       state.token = authToken;
     },
+    updateEmailAlerts: (state, { payload }: PayloadAction<boolean>) => {
+      if (state.user) {
+        state.user.emailAlerts = payload;
+      }
+    },
 
     clearSession: (state) => {
       removeSecondaryToken();
@@ -43,7 +48,8 @@ const authSlice = createSlice({
   },
 });
 
-export const { userLoaded, clearSession, authReset } = authSlice.actions;
+export const { userLoaded, clearSession, authReset, updateEmailAlerts } =
+  authSlice.actions;
 
 export const authSelector = (state: { auth: IAuthState }): IAuthState =>
   state.auth;

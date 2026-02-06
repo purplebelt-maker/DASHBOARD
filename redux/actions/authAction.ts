@@ -1,6 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { BackendInstance, config } from "./eventsAction";
-import { userLoaded, clearSession, authReset } from "../reducers/authReducer";
+import {
+  userLoaded,
+  clearSession,
+  authReset,
+  updateEmailAlerts,
+} from "../reducers/authReducer";
 import { ILoginFormData, IRegisterFormData } from "@/types/auth";
 import { RESET } from "../middleware/root/events";
 import { userLogout } from "@/lib/utils/logout";
@@ -46,7 +51,9 @@ export const register = createAsyncThunk(
     const body = JSON.stringify(formData);
     try {
       const res = await BackendInstance.post("user/register", body, config);
-      dispatch(updateAlert({ place: "tc", message: res.data.msg, type: "success" }));
+      dispatch(
+        updateAlert({ place: "tc", message: res.data.msg, type: "success" }),
+      );
 
       return true;
     } catch (err) {
@@ -193,6 +200,27 @@ export const resetPassword = createAsyncThunk(
       dispatch(
         updateAlert({ place: "tc", message: res.data.msg, type: "success" }),
       );
+      return true;
+    } catch (err) {
+      handlerError(err).forEach((error: string) => {
+        dispatch(updateAlert({ place: "tc", message: error, type: "danger" }));
+      });
+      return false;
+    }
+  },
+);
+
+export const toggleEmailAlerts = createAsyncThunk(
+  "registerSlice/register",
+  async (_, { dispatch }) => {
+    try {
+      const res = await BackendInstance.put("user/toggle", {}, config);
+      dispatch(
+        updateAlert({ place: "tc", message: res.data.msg, type: "success" }),
+      );
+
+      dispatch(updateEmailAlerts(res.data.data));
+
       return true;
     } catch (err) {
       handlerError(err).forEach((error: string) => {

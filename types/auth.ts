@@ -3,6 +3,7 @@ export interface IUser {
   email: string;
   firstName: string;
   lastName?: string;
+  emailAlerts: boolean;
 }
 
 export interface IAuthState {

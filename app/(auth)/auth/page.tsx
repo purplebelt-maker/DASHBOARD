@@ -7,7 +7,16 @@ import { useAppDispatch } from "@/redux/store";
 import { authSelector } from "@/redux/reducers";
 import { Login, register } from "@/redux/actions/authAction";
 import Image from "next/image";
-import { Mail, Lock, User, Eye, EyeOff, ArrowRight, Sparkles } from "lucide-react";
+import {
+  Mail,
+  Lock,
+  User,
+  Eye,
+  EyeOff,
+  ArrowRight,
+  Sparkles,
+  ChevronLeft,
+} from "lucide-react";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -59,13 +68,13 @@ export default function AuthPage() {
             confirmPassword,
             firstName,
             lastName: lastName || undefined,
-          })
+          }),
         ).unwrap();
       }
       router.push("/dashboard");
     } catch (err: any) {
       setError(
-        err.message || (isLogin ? "Login failed" : "Registration failed")
+        err.message || (isLogin ? "Login failed" : "Registration failed"),
       );
     } finally {
       setLoading(false);
@@ -91,13 +100,30 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen flex overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
+      {/* Fixed Back Button - Shows on all screen sizes */}
+      <button
+        onClick={() => router.push("/")}
+        className="fixed top-6 left-6 z-50 group inline-flex items-center gap-2 text-gray-400 hover:text-white transition-all duration-200"
+      >
+        <div className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center group-hover:bg-white/20 group-hover:border-white/30 group-hover:scale-110 transition-all shadow-lg">
+          <ChevronLeft className="w-5 h-5" />
+        </div>
+        <span className="hidden md:block text-sm font-medium group-hover:translate-x-0.5 transition-transform">
+          Back to Home
+        </span>
+      </button>
+
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse-slow" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse-slow" 
-             style={{ animationDelay: '1s' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-500/10 rounded-full blur-3xl animate-pulse-slow" 
-             style={{ animationDelay: '2s' }} />
+        <div
+          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse-slow"
+          style={{ animationDelay: "1s" }}
+        />
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-500/10 rounded-full blur-3xl animate-pulse-slow"
+          style={{ animationDelay: "2s" }}
+        />
       </div>
 
       {/* Grid Pattern */}
@@ -107,6 +133,8 @@ export default function AuthPage() {
         {/* Left Side - Marketing Content (Hidden on mobile) */}
         <div className="hidden lg:flex flex-1 items-center justify-center px-8">
           <div className="max-w-lg">
+            {/* END OF NEW BACK BUTTON */}
+
             <div className="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/30 rounded-full px-4 py-1.5 mb-4 backdrop-blur-sm">
               <Sparkles className="w-3.5 h-3.5 text-blue-400" />
               <span className="text-xs font-semibold text-blue-300">
@@ -123,28 +151,33 @@ export default function AuthPage() {
             </h1>
 
             <p className="text-lg text-gray-300 mb-6">
-              Get instant alerts on new markets. Filter by category, volume, and time. 
-              No sports. No clutter.
+              Get instant alerts on new markets. Filter by category, volume, and
+              time. No sports. No clutter.
             </p>
 
             {/* Feature Pills */}
             <div className="flex flex-wrap gap-2 mb-6">
-              {["Instant Alerts", "Smart Filters", "Real-time Data", "Zero Noise"].map(
-                (feature, i) => (
-                  <div
-                    key={i}
-                    className="px-3 py-1.5 bg-white/5 backdrop-blur-sm border border-white/20 rounded-full text-xs text-gray-300"
-                  >
-                    {feature}
-                  </div>
-                )
-              )}
+              {[
+                "Instant Alerts",
+                "Smart Filters",
+                "Real-time Data",
+                "Zero Noise",
+              ].map((feature, i) => (
+                <div
+                  key={i}
+                  className="px-3 py-1.5 bg-white/5 backdrop-blur-sm border border-white/20 rounded-full text-xs text-gray-300"
+                >
+                  {feature}
+                </div>
+              ))}
             </div>
 
             {/* Stats */}
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <div className="text-2xl font-bold text-white mb-0.5">1.2K+</div>
+                <div className="text-2xl font-bold text-white mb-0.5">
+                  1.2K+
+                </div>
                 <div className="text-xs text-gray-400">Active Users</div>
               </div>
               <div>
@@ -152,7 +185,9 @@ export default function AuthPage() {
                 <div className="text-xs text-gray-400">Monitoring</div>
               </div>
               <div>
-                <div className="text-2xl font-bold text-white mb-0.5">15min</div>
+                <div className="text-2xl font-bold text-white mb-0.5">
+                  15min
+                </div>
                 <div className="text-xs text-gray-400">Alert Speed</div>
               </div>
             </div>
@@ -166,6 +201,10 @@ export default function AuthPage() {
             <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 rounded-3xl blur-2xl opacity-20" />
 
             <div className="relative">
+              {/* ADD THIS MOBILE BACK BUTTON */}
+
+              {/* END OF MOBILE BACK BUTTON */}
+
               {/* Logo */}
               <div className="flex justify-center mb-4">
                 <Image

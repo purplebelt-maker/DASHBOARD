@@ -114,22 +114,6 @@ export default function FAQSection() {
             </div>
           ))}
         </div>
-
-        {/* Still have questions CTA */}
-        <div className="text-center mt-12 backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-8">
-          <h3 className="text-2xl font-bold text-white mb-2">
-            Still have questions?
-          </h3>
-          <p className="text-gray-400 mb-6">
-            Can&apos;t find the answer you&apos;re looking for? Send us an email.
-          </p>
-          <a
-            href="mailto:support@yoursite.com"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-semibold transition-all"
-          >
-            Contact Support
-          </a>
-        </div>
       </div>
     </section>
   );
